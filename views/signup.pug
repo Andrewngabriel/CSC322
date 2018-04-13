@@ -1,0 +1,13 @@
+extends layout.pug
+block content
+  .container
+    .row
+      .col
+        h3.display-4.text-center Sign up
+        form(action="" method="post")
+          form
+            .form-group
+              input.form-control(type="email" aria-describedby="emailHelp" placeholder="Email / Username")
+            .form-group
+              input.form-control(type="password" placeholder="Password")
+            button.btn.btn-primary(type="submit") Sign up
