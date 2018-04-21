@@ -4,10 +4,14 @@ block content
     .row
       .col
         h3.display-4.text-center Sign up
-        form(action="" method="post")
+        form(method="POST" action='/signup')
           form
             .form-group
-              input.form-control(type="email" aria-describedby="emailHelp" placeholder="Email / Username")
+              input#email.form-control(type="email" placeholder="Email" name='email')
             .form-group
-              input.form-control(type="password" placeholder="Password")
+              input#name.form-control(type="text" placeholder="First Last Name" name="name")
+            .form-group
+              input#address.form-control(type="text" placeholder="address" name="address")
+            .form-group
+              input#pw.form-control(type="password" placeholder="Password" name="password")
             button.btn.btn-primary(type="submit") Sign up

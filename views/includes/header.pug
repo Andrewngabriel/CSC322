@@ -1,12 +1,12 @@
 header
-nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+nav.navbar.navbar-expand-sm.navbar-dark.fixed-top.bg-dark
     a.navbar-brand(href="/") AAMM
     button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarsExampleDefault", aria-controls="navbarsExampleDefault", aria-expanded="false", aria-label="Toggle navigation")
         span.navbar-toggler-icon
 
     #navbarsExampleDefault.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-            li.nav-item.active
+            li.nav-item
                 a.nav-link(href="/") Home           
             
             li.nav-item
@@ -17,6 +17,14 @@ nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
             
             li.nav-item
                 a.nav-link(href="/complain") Complain
-            
-        a.btn.btn-outline-primary(href="/login") Login
-        a.btn.btn-outline-primary(href="/signup") Sign up
+        ul.navbar-nav
+            if currentUser
+                li.nav-item
+                    a.nav-link(href="/profile") Profile
+                li.nav-item
+                    a.btn.btn-outline-light(href="/logout" style="margin-right: 10px") Log out
+            else
+                li.nav-item
+                    a.btn.btn-outline-light(href="/login" style="margin-right: 10px") Login
+                li.nav-item
+                    a.btn.btn-outline-primary(href="/signup") Sign up
