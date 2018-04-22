@@ -5,9 +5,24 @@ block content
       .col
         h3.display-4.text-center Profile
     .row
-      .col
+      .col-3
         h4.text-center Name
         p.text-center #{name}
-      .col
+      .col-3
         h4.text-center Address
         p.text-center #{address}
+      .col-3
+        h4.text-center Account Type
+        p.text-center #{accountType}
+      .col-3
+        h4.text-center Rating
+        p.text-center #{rating}
+    hr
+    .row
+      .col
+        h4.text-center Order History
+
+    .row.justify-content-center
+      .col.text-center
+        - if (accountType == "Customer")
+          a(href="/complain") Complain

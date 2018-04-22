@@ -1,17 +1,19 @@
 extends layout.pug
 block content
   .container
-    .row
-      .col
+    .row.justify-content-center
+      .col-6.text-center
         h3.display-4.text-center Sign up
         form(method="POST" action='/signup')
           form
             .form-group
               input#email.form-control(type="email" placeholder="Email" name='email')
             .form-group
-              input#name.form-control(type="text" placeholder="First Last Name" name="name")
+              input#name.form-control(type="text" placeholder="Full Name" name="name")
             .form-group
-              input#address.form-control(type="text" placeholder="address" name="address")
+              input.form-control(type="text" placeholder="Account Type | (Customer, Manager, Cook, Delivery)" name="accountType")
+            .form-group
+              input#address.form-control(type="text" placeholder="Address" name="address")
             .form-group
               input#pw.form-control(type="password" placeholder="Password" name="password")
             button.btn.btn-primary(type="submit") Sign up

@@ -1,11 +1,19 @@
 extends layout.pug
 block content
   .container
-    .row
-      .col
+    .row.justify-content-center
+      .col-6.text-center
         h3.display-4.text-center Login
-        form(action="" method="post")
+        form(method="POST")
           form
+            .form-group
+              input.form-control(type="text" placeholder="Account Type" name="accountType")
+              //- label Account Type
+              //- select.form-control     
+              //-   option(name="customer") Customer
+              //-   option(name="manager") Manager
+              //-   option(name="cook") Cook
+              //-   option(name="delivery") Delivery
             .form-group
               input.form-control(type="email" placeholder="Email" name="email")
             .form-group

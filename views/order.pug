@@ -4,3 +4,12 @@ block content
     .row
       .col
         h3.display-4.text-center Order
+    .row.justify-content-center
+      .col-6.text-center
+        form(method="POST")
+          form
+            .form-group
+              input.form-control(type="text" placeholder="Pizza Size" name="pizzaSize")
+            .form-group
+              input.form-control(type="text" placeholder="Toppings" name="toppings")
+            button.btn.btn-primary(type="submit") Submit Order
