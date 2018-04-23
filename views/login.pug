@@ -1,19 +1,20 @@
 extends layout.pug
 block content
+  .jumbotron
+    .container
+      h1.display-4.text-center Login
   .container
     .row.justify-content-center
       .col-6.text-center
-        h3.display-4.text-center Login
         form(method="POST")
           form
             .form-group
-              input.form-control(type="text" placeholder="Account Type" name="accountType")
-              //- label Account Type
-              //- select.form-control     
-              //-   option(name="customer") Customer
-              //-   option(name="manager") Manager
-              //-   option(name="cook") Cook
-              //-   option(name="delivery") Delivery
+              label Account Type
+              select.form-control(name="accountType")
+                option(value="Customer") Customer
+                option(value="Manager") Manager
+                option(value="Cook") Cook
+                option(value="Delivery") Delivery
             .form-group
               input.form-control(type="email" placeholder="Email" name="email")
             .form-group

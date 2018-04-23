@@ -1,15 +1,20 @@
 extends layout.pug
 block content
-  .container
-    .row
-      .col
-        h3.display-4.text-center Order
-    .row.justify-content-center
-      .col-6.text-center
-        form(method="POST")
-          form
-            .form-group
-              input.form-control(type="text" placeholder="Pizza Size" name="pizzaSize")
-            .form-group
-              input.form-control(type="text" placeholder="Toppings" name="toppings")
-            button.btn.btn-primary(type="submit") Submit Order
+  .jumbotron
+    .container
+        h1.display-4.text-center Order
+  .row.justify-content-center
+    .col-6.text-center
+      form(method="POST")
+        form
+          .form-group
+            label Pizza Size
+            select.form-control(name="pizzaSize")
+              option(value="Small") Small
+              option(value="Medium") Medium
+              option(value="Large") Large
+          //- .form-group
+          //-   input.form-control(type="text" placeholder="Pizza Size" name="pizzaSize")
+          .form-group
+            input.form-control(type="text" placeholder="Toppings (ex. Cheese, Pepperoni, Olives)" name="toppings")
+          button.btn.btn-primary(type="submit") Submit Order

@@ -23,7 +23,7 @@ router.post('/order', (req, res, next) => {
 
   if (pizzaSize && toppings) {
     const orderData = {
-      date: Date.now,
+      date: new Date(),
       customerId: req.session.userId,
       customerAddress: req.session.address,
       pizzaSize: pizzaSize,
@@ -47,17 +47,29 @@ router.get('/complain', mid.requiresLogin, (req, res) => {
   res.render('complain', { title: 'Complain' });
 });
 
-router.get('/profile', mid.requiresLogin, (req, res) => {
-  Customer.findById(req.session.userId).exec((err, user) => {
+router.get('/profile', mid.requiresLogin, (req, res, next) => {
+  let orderList;
+  let orderHistory = Order.find({ customerId: req.session.userId });
+  orderHistory.select(
+    'ObjectId date customerAddress pizzaSize pizzaToppings pizzaRating deliveryRating customerRating'
+  );
+  orderHistory.exec((err, orders) => {
     if (err) {
       next(err);
     } else {
-      res.render('profile', {
-        title: 'Profile',
-        name: user.name,
-        address: user.address,
-        accountType: user.accountType,
-        rating: user.rating
+      Customer.findById(req.session.userId).exec((err, user) => {
+        if (err) {
+          next(err);
+        } else {
+          res.render('profile', {
+            title: 'Profile',
+            name: user.name,
+            address: user.address,
+            accountType: user.accountType,
+            rating: user.rating,
+            orderHistory: orders
+          });
+        }
       });
     }
   });
@@ -71,6 +83,7 @@ router.post('/login', (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
   let accountType = req.body.accountType;
+
   if (email && password && accountType) {
     Customer.authenticate(email, password, accountType, (err, user) => {
       if (err || !user) {
@@ -115,6 +128,7 @@ router.post('/signup', (req, res, next) => {
         next(err);
       } else {
         req.session.userId = user._id;
+        req.session.address = user.address;
         res.redirect('/profile');
       }
     });

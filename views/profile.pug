@@ -1,28 +1,44 @@
 extends layout.pug
 block content
+  .jumbotron
+      .container
+          h1.display-4.text-center Profile
   .container
     .row
-      .col
-        h3.display-4.text-center Profile
-    .row
       .col-3
-        h4.text-center Name
+        h3.text-center Name
         p.text-center #{name}
       .col-3
-        h4.text-center Address
+        h3.text-center Address
         p.text-center #{address}
       .col-3
-        h4.text-center Account Type
+        h3.text-center Account Type
         p.text-center #{accountType}
       .col-3
-        h4.text-center Rating
+        h3.text-center Rating
         p.text-center #{rating}
+    
     hr
+    
     .row
       .col
-        h4.text-center Order History
+        h3.text-center Order History
+        br
+    .row  
+      each order, val in orderHistory
+        .col
+          .card
+            h5.card-header= ("Order #" + (val+1))
+            .card-body
+              h6.card-title= ("Order ID: " + order._id)
+              p.card-text= ("Date: " + order.date)
+              p.card-text= ("Address: " + order.customerAddress)
+              p.card-text= ("Pizza Size: " + order.pizzaSize)
+              p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
+              a.btn.btn-info(href="#") Rate
+          br
 
     .row.justify-content-center
       .col.text-center
-        - if (accountType == "Customer")
-          a(href="/complain") Complain
+        - if (accountType == "Customer" || accountType == "Manager")
+          a.btn.btn-danger(href="/complain") Complain

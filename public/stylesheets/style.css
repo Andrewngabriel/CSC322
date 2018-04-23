@@ -1,3 +1,8 @@
 body {
   padding-top: 3.5rem;
 }
+
+.jumbotron {
+  margin-top: -50px;
+  height: 150px;
+}
