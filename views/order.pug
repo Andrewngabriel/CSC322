@@ -4,3 +4,87 @@ block content
     .row
       .col
         h3.display-4.text-center Order
+        p.text-left 
+          select.custom-select
+            option(selected='') Choose Quantity
+            option(value='1') 1
+            option(value='2') 2
+            option(value='3') 3
+            option(value='4') 4
+            option(value='5') 5
+          form
+            .form-group
+              label.control-label Choose your Pizza size
+              .radio
+                label
+                  input(type='radio', name='fav_foods', value='pizza')
+                  | 			18 inches
+              .radio
+                label
+                  input(type='radio', name='fav_foods', value='hamburger')
+                  | 			16 inches
+              .radio
+                label
+                  input(type='radio', name='fav_foods', value='hamburger')
+                  | 			14 inches    
+          form
+              .form-group
+                label.control-label Choose your crust
+                .radio
+                  label
+                    input(type='radio', name='fav_foods', value='pizza')
+                    | 			cheese stuffed
+                .radio
+                  label
+                    input(type='radio', name='fav_foods', value='hamburger')
+                    | 			thin
+                .radio
+                  label
+                    input(type='radio', name='fav_foods', value='hamburger')
+                    | 		 garlic  
+          form
+              .form-group
+                label.control-label Toppings           
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox1.form-check-input(type='checkbox', value='option1')
+              |  Extra Cheese
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox2.form-check-input(type='checkbox', value='option2')
+              |  Pepperoni
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox3.form-check-input(type='checkbox', value='option3')
+              |  Mushrooms
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox1.form-check-input(type='checkbox', value='option4')
+              |  Sasuage
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox2.form-check-input(type='checkbox', value='option5')
+              |  Olives
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox3.form-check-input(type='checkbox', value='option6')
+              |  Green Peppers
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox1.form-check-input(type='checkbox', value='option7')
+              |  Pineapple
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox2.form-check-input(type='checkbox', value='option8')
+              |  Jalapeno
+          .form-check.form-check-inline
+            label.form-check-label
+              input#inlineCheckbox3.form-check-input(type='checkbox', value='option9')
+              |  Bacon    
+          .form-group
+              label(for='exampleTextarea') Special Instructions
+              textarea#exampleTextarea.form-control(rows='7')          
+          .form-group
+              // Submit button !
+              button.btn.btn-primary(name='submit', type='submit') Submit Order
+          
