@@ -8,9 +8,10 @@ block content
       .col-3
         h3.text-center Name
         p.text-center #{name}
-      .col-3
-        h3.text-center Address
-        p.text-center #{address}
+      - if (accountType == "Customer")
+        .col-3
+          h3.text-center Address
+          p.text-center #{address}
       .col-3
         h3.text-center Account Type
         p.text-center #{accountType}
@@ -35,7 +36,8 @@ block content
               p.card-text= ("Address: " + order.customerAddress)
               p.card-text= ("Pizza Size: " + order.pizzaSize)
               p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
-              a.btn.btn-info(href="#") Rate
+              - if (accountType == "Customer")
+                a.btn.btn-success(href="#") Rate
           br
 
     .row.justify-content-center
