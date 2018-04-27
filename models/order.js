@@ -27,7 +27,7 @@ const OrderSchema = new Schema({
   },
   delivery: {
     type: Schema.Types.ObjectId,
-    ref: 'Delivery',
+    ref: 'Employee',
     required: false
   },
   pizzaRating: {

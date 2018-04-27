@@ -97,21 +97,18 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
     });
   } else if (accountType == 'Delivery') {
     let orderHistory = Order.find({ delivery: req.session.userId });
-    orderHistory.select(
-      'ObjectId date customerAddress pizzaSize pizzaToppings pizzaRating deliveryRating customerRating'
-    );
     orderHistory.exec((err, orders) => {
       if (err) {
         next(err);
       } else {
-        employee.findById(req.session.userId).exec((err, employee) => {
+        Employee.findById(req.session.userId).exec((err, employee) => {
           if (err) {
             next(err);
           } else {
             res.render('profile', {
               title: 'Profile',
               name: employee.name,
-              accountType: employee.accountType,
+              accountType: employee.position,
               orderHistory: orders
             });
           }
@@ -129,7 +126,7 @@ router.post('/login', (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
   let accountType = req.body.accountType;
-  console.log(accountType);
+
   if (email && password && accountType) {
     if (accountType == 'Customer') {
       Customer.authenticate(email, password, accountType, (err, user) => {
@@ -164,7 +161,7 @@ router.post('/login', (req, res, next) => {
           next(err);
         } else {
           req.session.userId = employee._id;
-          req.session.accountType = employee.accountType;
+          req.session.accountType = employee.position;
           res.redirect('/profile');
         }
       });
@@ -175,8 +172,8 @@ router.post('/login', (req, res, next) => {
           err.status = 401;
           next(err);
         } else {
-          req.session.userId = user._id;
-          req.session.accountType = employee.accountType;
+          req.session.userId = employee._id;
+          req.session.accountType = employee.position;
           res.redirect('/profile');
         }
       });
@@ -242,11 +239,11 @@ router.post('/signup', (req, res, next) => {
       });
     }
   } else if (accountType == 'Cook' || accountType == 'Delivery') {
-    if (email && name && pasword) {
+    if (email && name && password) {
       const userData = {
         email: email,
         name: name,
-        accountType: accountType,
+        position: accountType,
         password: password
       };
 
@@ -255,7 +252,7 @@ router.post('/signup', (req, res, next) => {
           next(err);
         } else {
           req.session.userId = employee._id;
-          req.session.accountType = employee.accountType;
+          req.session.accountType = employee.position;
           res.redirect('/profile');
         }
       });
