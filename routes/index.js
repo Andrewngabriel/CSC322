@@ -196,8 +196,8 @@ router.post('/signup', (req, res, next) => {
   let address = req.body.address;
   let password = req.body.password;
 
-  if (accountType == 'Customer') {
-    if (email && name && address && password && accountType) {
+  if (email && name && address && password && accountType) {
+    if (accountType == 'Customer') {
       const userData = {
         email: email,
         name: name,
@@ -218,9 +218,7 @@ router.post('/signup', (req, res, next) => {
           }
         });
       }
-    }
-  } else if (accountType == 'Manager') {
-    if (email && name && password) {
+    } else if (accountType == 'Manager') {
       const userData = {
         email: email,
         name: name,
@@ -237,9 +235,7 @@ router.post('/signup', (req, res, next) => {
           res.redirect('/profile');
         }
       });
-    }
-  } else if (accountType == 'Cook' || accountType == 'Delivery') {
-    if (email && name && password) {
+    } else if (accountType == 'Cook' || accountType == 'Delivery') {
       const userData = {
         email: email,
         name: name,
