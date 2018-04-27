@@ -1,17 +1,26 @@
 extends layout.pug
 block content
+  .jumbotron
+    .container
+      h1.display-4.text-center Sign up
   .container
-    .row
-      .col
-        h3.display-4.text-center Sign up
+    .row.justify-content-center
+      .col-6.text-center
         form(method="POST" action='/signup')
           form
             .form-group
-              input#email.form-control(type="email" placeholder="Email" name='email')
+              input.form-control(type="email" placeholder="Email" name='email')
             .form-group
-              input#name.form-control(type="text" placeholder="First Last Name" name="name")
+              input.form-control(type="text" placeholder="Full Name" name="name")
+            label Account Type
             .form-group
-              input#address.form-control(type="text" placeholder="address" name="address")
+              select.form-control(name="accountType")
+                option(value="Customer") Customer
+                option(value="Manager") Manager
+                option(value="Cook") Cook
+                option(value="Delivery") Delivery
             .form-group
-              input#pw.form-control(type="password" placeholder="Password" name="password")
+              input.form-control(type="text" placeholder="Address" name="address")
+            .form-group
+              input.form-control(type="password" placeholder="Password" name="password")
             button.btn.btn-primary(type="submit") Sign up

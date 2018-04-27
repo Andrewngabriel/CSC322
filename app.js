@@ -42,6 +42,23 @@ app.set('view engine', 'pug');
 const mainRoutes = require('./routes/index');
 app.use('/', mainRoutes);
 
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+  const err = new Error('File Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
+// define as the last app.use callback
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Up and running on: ${PORT}`);
 });
