@@ -6,3 +6,19 @@ body {
   margin-top: -50px;
   height: 150px;
 }
+.left{
+	background-color: #ccc; 
+
+
+
+}
+
+.center{
+	background-color: #eee; 
+	/*padding: 0px;*/
+
+}
+.right{
+	background-color: #ccc; 
+
+}

@@ -1,4 +1,5 @@
 
+
 extends layout.pug
 block content
   .jumbotron
@@ -7,6 +8,17 @@ block content
   .row.justify-content-center
     .col-6.text-center
       form(method="POST")
+        form
+          .form-group
+            label Pizza Size
+            select.form-control(name="pizzaSize")
+              option(value="Small") Small
+              option(value="Medium") Medium
+              option(value="Large") Large
+          .form-group
+            input.form-control(type="text" placeholder="Toppings (ex. Cheese, Pepperoni, Olives)" name="toppings")
+          button.btn.btn-primary(type="submit") Submit Order
+          nav.navbar.navbar-default.navbar-fixed-top
 
       nav.navbar.navbar-default.navbar-fixed-top
   .container-fluid
