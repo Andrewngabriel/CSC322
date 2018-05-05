@@ -6,12 +6,13 @@ const Manager = require('../models/manager');
 const Employee = require('../models/employee');
 const mid = require('../middleware'); // Middleware helper functions for authentication
 
+
 router.get('/', (req, res) => {
   res.render('index', { title: 'Home' });
 });
 
 router.get('/about', (req, res) => {
-  res.render('about', { title: 'About' });
+  res.render('order', { title: 'About' });
 });
 
 router.get('/order', (req, res) => {
@@ -43,6 +44,11 @@ router.post('/order', (req, res, next) => {
     next(err);
   }
 });
+
+router.get('/map', (req, res) => {
+  res.render('map', { title: 'Map' });
+});
+
 
 router.get('/complain', mid.requiresLogin, (req, res) => {
   res.render('complain', { title: 'Complain' });
@@ -272,5 +278,6 @@ router.get('/logout', (req, res, next) => {
     });
   }
 });
+
 
 module.exports = router;
