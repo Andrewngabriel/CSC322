@@ -10,6 +10,37 @@ router.get('/', (req, res) => {
   res.render('index', { title: 'Home' });
 });
 
+// If user chooses visitor, then we create an instance of customer model with visitor accountType
+router.post('/', (req, res, next) => {
+  const userData = {
+    email: `${Math.random()}@visitor.com`,
+    name: 'Visitor',
+    address: 'Visitor Address',
+    password: 'visitor',
+    accountType: 'visitor'
+  };
+
+  Customer.create(userData, (err, user) => {
+    if (err) {
+      next(err);
+    } else {
+      req.session.userId = user._id;
+      req.session.address = user.address;
+      req.session.accountType = user.accountType;
+      res.redirect('./address');
+    }
+  });
+  // res.render('address', { title: 'Address' });
+});
+
+router.get('/address', (req, res) => {
+  res.render('address', { title: 'Address' });
+});
+
+router.get('/stores', (req, res) => {
+  res.render('stores', { title: 'Stores' });
+});
+
 router.get('/about', (req, res) => {
   res.render('about', { title: 'About' });
 });
@@ -50,7 +81,7 @@ router.get('/complain', mid.requiresLogin, (req, res) => {
 
 router.get('/profile', mid.requiresLogin, (req, res, next) => {
   let accountType = req.session.accountType;
-  if (accountType == 'Customer') {
+  if (accountType == 'Customer' || accountType == 'visitor') {
     let orderHistory = Order.find({ customerId: req.session.userId });
     orderHistory.select(
       'ObjectId date customerAddress pizzaSize pizzaToppings pizzaRating deliveryRating customerRating'

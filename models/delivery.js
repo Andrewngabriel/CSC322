@@ -21,6 +21,11 @@ const DeliverySchema = new Schema({
     type: Boolean,
     default: false
   },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5
+  },
   orderDelivering: {
     type: Schema.Types.ObjectId,
     ref: 'Order',

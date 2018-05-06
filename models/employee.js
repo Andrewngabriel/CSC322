@@ -6,7 +6,8 @@ const EmployeeSchema = new Schema({
     type: String,
     unique: true,
     required: true,
-    trim: true
+    trim: true,
+    lowercase: true
   },
   name: {
     type: String,
@@ -30,20 +31,26 @@ EmployeeSchema.statics.authenticate = function(
   position,
   callback
 ) {
-  Employee.findOne({ email: email }).exec((err, employee) => {
+  Employee.findOne({
+    email: email,
+    password: password,
+    position: position
+  }).exec((err, employee) => {
     if (err) {
       callback(err);
     } else if (!employee) {
       const err = new Error('Employee not found.');
       err.status = 401;
       callback(err);
+    } else {
+      callback(null, employee);
     }
 
-    if (password == employee.password && position == employee.position) {
-      callback(null, employee);
-    } else {
-      callback();
-    }
+    // if (password == employee.password && position == employee.position) {
+    //   callback(null, employee);
+    // } else {
+    //   callback();
+    // }
   });
 };
 
