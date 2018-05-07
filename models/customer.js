@@ -6,7 +6,8 @@ const CustomerSchema = new Schema({
     type: String,
     unique: true,
     required: false,
-    trim: true
+    trim: true,
+    lowercase: true
   },
   name: {
     type: String,
@@ -22,18 +23,30 @@ const CustomerSchema = new Schema({
     type: String,
     required: true
   },
+  storeJoinedName: {
+    type: Schema.Types.String,
+    ref: 'Store'
+  },
+  storeJoinedId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Store'
+  },
   blacklist: {
     type: Boolean,
     default: false,
     required: false
   },
   accountType: {
+    // Three types: Regular(default), Visitor, VIP
     type: String,
-    required: true
+    required: false,
+    default: 'customer',
+    lowercase: true
   },
   rating: {
-    type: { type: Number, min: 0, max: 5 },
-    default: 0
+    type: Number,
+    min: 1,
+    max: 5
   }
 });
 
@@ -44,7 +57,9 @@ CustomerSchema.statics.authenticate = function(
   callback
 ) {
   Customer.findOne({
-    email: email
+    email: email,
+    password: password,
+    accountType: accountType
   }).exec((err, user) => {
     if (err) {
       callback(err);
@@ -52,12 +67,8 @@ CustomerSchema.statics.authenticate = function(
       const err = new Error('User not found.');
       err.status = 401;
       callback(err);
-    }
-
-    if (password == user.password && accountType == user.accountType) {
-      callback(null, user);
     } else {
-      callback();
+      callback(null, user);
     }
   });
 };

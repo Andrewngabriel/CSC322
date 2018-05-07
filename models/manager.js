@@ -6,7 +6,8 @@ const ManagerSchema = new Schema({
     type: String,
     unique: true,
     required: true,
-    trim: true
+    trim: true,
+    lowercase: true
   },
   name: {
     type: String,
@@ -16,6 +17,7 @@ const ManagerSchema = new Schema({
   accountType: {
     type: String,
     required: true,
+    lowercase: true,
     trim: true
   },
   password: {
@@ -25,19 +27,15 @@ const ManagerSchema = new Schema({
 });
 
 ManagerSchema.statics.authenticate = function(email, password, callback) {
-  Manager.findOne({ email: email }).exec((err, manager) => {
+  Manager.findOne({ email: email, password: password }).exec((err, manager) => {
     if (err) {
       callback(err);
     } else if (!manager) {
       const err = new Error('Manager not found.');
       err.status = 401;
       callback(err);
-    }
-
-    if (password == manager.password) {
-      callback(null, manager);
     } else {
-      callback();
+      callback(null, manager);
     }
   });
 };

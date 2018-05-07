@@ -15,6 +15,11 @@ const OrderSchema = new Schema({
     type: String,
     required: true
   },
+  store: {
+    type: Schema.Types.ObjectId,
+    ref: 'Store',
+    required: true
+  },
   pizzaSize: {
     type: String,
     required: true,
@@ -30,17 +35,19 @@ const OrderSchema = new Schema({
     ref: 'Employee',
     required: false
   },
+  cook: {
+    type: Schema.Types.ObjectId,
+    ref: 'Cook',
+    required: false
+  },
   pizzaRating: {
-    value: { type: Number, min: 0, max: 5 },
-    required: false
+    type: Number,
+    min: 1,
+    max: 5
   },
-  deliveryRating: {
-    value: { type: Number, min: 0, max: 5 },
-    required: false
-  },
-  customerRating: {
-    value: { type: Number, min: 0, max: 5 },
-    required: false
+  status: {
+    type: Boolean,
+    default: false
   }
 });
 
