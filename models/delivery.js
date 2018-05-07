@@ -6,6 +6,7 @@ const DeliverySchema = new Schema({
     type: String,
     unique: true,
     required: true,
+    lowercase: true,
     trim: true
   },
   name: {
@@ -33,22 +34,20 @@ const DeliverySchema = new Schema({
   }
 });
 
-ManagerSchema.statics.authenticate = function(email, password, callback) {
-  Manager.findOne({ email: email }).exec((err, delivery) => {
-    if (err) {
-      callback(err);
-    } else if (!delivery) {
-      const err = new Error('Manager not found.');
-      err.status = 401;
-      callback(err);
+DeliverySchema.statics.authenticate = function(email, password, callback) {
+  Delivery.findOne({ email: email, password: password }).exec(
+    (err, delivery) => {
+      if (err) {
+        callback(err);
+      } else if (!delivery) {
+        const err = new Error('Delivery Person not found.');
+        err.status = 401;
+        callback(err);
+      } else {
+        callback(null, delivery);
+      }
     }
-
-    if (password == delivery.password) {
-      callback(null, delivery);
-    } else {
-      callback();
-    }
-  });
+  );
 };
 
 const Delivery = mongoose.model('Delivery', DeliverySchema);

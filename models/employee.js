@@ -45,12 +45,6 @@ EmployeeSchema.statics.authenticate = function(
     } else {
       callback(null, employee);
     }
-
-    // if (password == employee.password && position == employee.position) {
-    //   callback(null, employee);
-    // } else {
-    //   callback();
-    // }
   });
 };
 

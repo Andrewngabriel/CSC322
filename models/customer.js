@@ -23,10 +23,13 @@ const CustomerSchema = new Schema({
     type: String,
     required: true
   },
-  storeJoined: {
+  storeJoinedName: {
+    type: Schema.Types.String,
+    ref: 'Store'
+  },
+  storeJoinedId: {
     type: Schema.Types.ObjectId,
-    ref: 'Store',
-    required: false
+    ref: 'Store'
   },
   blacklist: {
     type: Boolean,
@@ -34,8 +37,10 @@ const CustomerSchema = new Schema({
     required: false
   },
   accountType: {
+    // Three types: Regular(default), Visitor, VIP
     type: String,
-    required: true,
+    required: false,
+    default: 'customer',
     lowercase: true
   },
   rating: {

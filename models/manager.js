@@ -17,6 +17,7 @@ const ManagerSchema = new Schema({
   accountType: {
     type: String,
     required: true,
+    lowercase: true,
     trim: true
   },
   password: {
@@ -36,12 +37,6 @@ ManagerSchema.statics.authenticate = function(email, password, callback) {
     } else {
       callback(null, manager);
     }
-
-    // if (password == manager.password) {
-    //   callback(null, manager);
-    // } else {
-    //   callback();
-    // }
   });
 };
 

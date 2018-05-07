@@ -35,9 +35,19 @@ const OrderSchema = new Schema({
     ref: 'Employee',
     required: false
   },
-  pizzaRating: {
-    value: { type: Number, min: 0, max: 5 },
+  cook: {
+    type: Schema.Types.ObjectId,
+    ref: 'Cook',
     required: false
+  },
+  pizzaRating: {
+    type: Number,
+    min: 1,
+    max: 5
+  },
+  status: {
+    type: Boolean,
+    default: false
   }
 });
 

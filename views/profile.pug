@@ -8,7 +8,7 @@ block content
       .col-3
         h3.text-center Name
         p.text-center #{name}
-      - if (accountType == "Customer")
+      - if (accountType == "customer")
         .col-3
           h3.text-center Address
           p.text-center #{address}
@@ -36,11 +36,11 @@ block content
               p.card-text= ("Address: " + order.customerAddress)
               p.card-text= ("Pizza Size: " + order.pizzaSize)
               p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
-              - if (accountType == "Customer")
+              - if (accountType == "customer")
                 a.btn.btn-success(href="#") Rate
           br
 
     .row.justify-content-center
       .col.text-center
-        - if (accountType == "Customer" || accountType == "Manager")
+        - if (accountType == "customer" || accountType == "manager")
           a.btn.btn-danger(href="/complain") Complain
