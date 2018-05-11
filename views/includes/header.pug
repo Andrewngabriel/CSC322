@@ -6,7 +6,7 @@ nav.navbar.navbar-expand-sm.navbar-dark.fixed-top.bg-dark
 
     #navbarsExampleDefault.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-            - if (accountType == "customer")
+            if currentUser
                 li.nav-item
                     a.nav-link(href="/") Home   
                 li.nav-item
@@ -14,7 +14,7 @@ nav.navbar.navbar-expand-sm.navbar-dark.fixed-top.bg-dark
         ul.navbar-nav
             if accountType == "visitor"
                 li.nav-item
-                    a.nav-link(href="/profile") Set up account
+                    a.nav-link(href="/signup") Set up account
             else if currentUser
                 li.nav-item
                     a.nav-link(href="/profile") Profile

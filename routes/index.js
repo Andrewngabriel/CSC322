@@ -9,12 +9,12 @@ const Employee = require('../models/employee');
 const Store = require('../models/store');
 const mid = require('../middleware'); // Middleware helper functions for authentication
 
-router.get('/', mid.requiresCustomerAccess, (req, res, next) => {
+router.get('/', (req, res, next) => {
   res.render('index', { title: 'Home' });
 });
 
 // If user chooses visitor, then we create an instance of customer model with visitor accountType
-router.post('/', mid.requiresCustomerAccess, (req, res, next) => {
+router.post('/', (req, res, next) => {
   const userData = {
     email: `${mid.genRandomNum(1, 10000)}@aamm.com`,
     name: 'Visitor',
@@ -39,7 +39,7 @@ router.get('/address', (req, res) => {
   res.render('address', { title: 'Address' });
 });
 
-router.get('/stores', (req, res) => {
+router.get('/stores', (req, res, next) => {
   let storeList = Store.find();
   storeList.exec((err, stores) => {
     if (err) {
@@ -171,6 +171,7 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
       active: false,
       accountType: 'customer'
     });
+    let deliveryList = Delivery.find({ availability: true });
     orderHistory.exec((err, orders) => {
       if (err) {
         next(err);
@@ -184,14 +185,21 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
                 next(err);
               } else {
                 customerList.exec((err, customers) => {
-                  res.render('profile', {
-                    title: 'Profile',
-                    name: manager.name,
-                    accountType: manager.accountType,
-                    orderHistory: orders,
-                    storeList: stores,
-                    customerList: customers
-                  });
+                  if (err) {
+                    next(err);
+                  } else {
+                    deliveryList.exec((err, deliveryPeople) => {
+                      res.render('profile', {
+                        title: 'Profile',
+                        name: manager.name,
+                        accountType: manager.accountType,
+                        orderHistory: orders,
+                        storeList: stores,
+                        customerList: customers,
+                        deliveryPersonnel: deliveryPeople
+                      });
+                    });
+                  }
                 });
               }
             });
@@ -214,7 +222,8 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
               name: delivery.name,
               accountType: accountType,
               orderHistory: orders,
-              availability: delivery.availability
+              availability: delivery.availability,
+              rating: delivery.rating
             });
           }
         });
@@ -247,7 +256,41 @@ router.post('/profile', (req, res, next) => {
   let accountType = req.session.accountType;
   if (accountType == 'customer' || accountType == 'Customer') {
     let pizzaRating = req.body.pizzaRating;
+    let storeRating = req.body.storeRating;
+    let deliveryRating = req.body.deliveryRating;
     let orderId = req.body.orderId;
+    let storeId = req.body.storeId;
+    let deliveryId = req.body.deliveryId;
+
+    // Update Store Rating
+    Store.findById(storeId, (err, store) => {
+      if (err) {
+        next(err);
+      } else {
+        store.rating = storeRating;
+        // (store.rating + storeRating) / Order.length
+        store.save((err, updatedStore) => {
+          if (err) {
+            next(err);
+          }
+        });
+      }
+    });
+
+    // Update Delivery Rating
+    Delivery.findById(deliveryId, (err, delivery) => {
+      if (err) {
+        next(err);
+      } else {
+        delivery.rating = deliveryRating;
+        delivery.save((err, updatedDelivery) => {
+          if (err) {
+            next(err);
+          }
+        });
+      }
+    });
+
     Order.findById(orderId, (err, order) => {
       if (err) {
         next(err);
@@ -264,20 +307,57 @@ router.post('/profile', (req, res, next) => {
     });
   } else if (accountType == 'manager' || accountType == 'Manager') {
     let customerId = req.body.customerId;
-    Customer.findById(customerId, (err, customer) => {
-      if (err) {
-        next(err);
-      } else {
-        customer.active = true;
-        customer.save((err, updatedCustomer) => {
-          if (err) {
-            next(err);
-          } else {
-            res.redirect('/profile');
-          }
-        });
-      }
-    });
+    let orderId = req.body.orderId;
+    let deliveryPerson = req.body.deliveryPerson;
+    // console.log(deliveryPerson);
+    if (deliveryPerson) {
+      Order.findById(orderId, (err, order) => {
+        if (err) {
+          next(err);
+        } else {
+          order.delivery = deliveryPerson;
+          order.status = true;
+          order.save((err, updatedOrder) => {
+            if (err) {
+              next(err);
+            } else {
+              res.redirect('/profile');
+            }
+          });
+        }
+      });
+      // Order.findById(orderId, (err, order) => {
+      //   if (err) {
+      //     next(err);
+      //   } else {
+      //     console.log(order.delivery);
+      //     order.delivery = deliveryPerson;
+      //     order.status = true;
+      //     order.save((err, updatedOrder) => {
+      //       if (err) {
+      //         next(err);
+      //       } else {
+      //         res.redirect('/profile');
+      //       }
+      //     });
+      //   }
+      // });
+    } else {
+      Customer.findById(customerId, (err, customer) => {
+        if (err) {
+          next(err);
+        } else {
+          customer.active = true;
+          customer.save((err, updatedCustomer) => {
+            if (err) {
+              next(err);
+            } else {
+              res.redirect('/profile');
+            }
+          });
+        }
+      });
+    }
   } else if (accountType == 'delivery' || accountType == 'Delivery') {
     let deliveryAvailability = req.body.availability;
     Delivery.findById(req.session.userId, (err, delivery) => {

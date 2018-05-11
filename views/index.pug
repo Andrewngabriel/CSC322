@@ -8,7 +8,7 @@ block content
   .container
     .row.justify-content-center
       .col.text-center
-        if (accountType == "customer")
+        if currentUser
           a.btn.btn-lg.btn-primary(href="/address") Begin Order
         else
           a.btn.btn-lg.btn-primary(href="/login" style="margin: 10px") Login

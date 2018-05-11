@@ -1,8 +1,17 @@
 function loggedOut(req, res, next) {
-  if (req.session && req.session.userId) {
+  if (req.session.accountType == 'visitor') {
+    req.session.destroy(err => {
+      if (err) {
+        next(err);
+      } else {
+        next();
+      }
+    });
+  } else if (req.session && req.session.userId) {
     return res.redirect('/profile');
+  } else {
+    next();
   }
-  next();
 }
 
 function requiresLogin(req, res, next) {
