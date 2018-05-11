@@ -6,6 +6,7 @@ const Manager = require('../models/manager');
 const Delivery = require('../models/delivery');
 const Cook = require('../models/cook');
 const Employee = require('../models/employee');
+const Store = require('../models/store');
 const mid = require('../middleware'); // Middleware helper functions for authentication
 
 router.get('/', (req, res) => {
@@ -15,7 +16,7 @@ router.get('/', (req, res) => {
 // If user chooses visitor, then we create an instance of customer model with visitor accountType
 router.post('/', (req, res, next) => {
   const userData = {
-    email: `${Math.random()}@visitor.com`,
+    email: `${mid.genRandomNum(1, 10000)}@aamm.com`,
     name: 'Visitor',
     address: 'Visitor Address',
     password: 'visitor',
@@ -32,7 +33,6 @@ router.post('/', (req, res, next) => {
       res.redirect('./address');
     }
   });
-  // res.render('address', { title: 'Address' });
 });
 
 router.get('/address', (req, res) => {
@@ -48,6 +48,37 @@ router.get('/stores', (req, res) => {
       res.render('stores', { title: 'Stores', storeList: stores });
     }
   });
+});
+
+router.post('/stores', (req, res) => {});
+
+router.get('/addStore', mid.requiresManagerAccess, (req, res) => {
+  res.render('addStore', { title: 'Add a Store' });
+});
+
+router.post('/addStore', mid.requiresManagerAccess, (req, res, next) => {
+  let storeName = req.body.storeName;
+  let manager = req.session.userId;
+  let storeAddress = req.body.address;
+  if (storeName && manager && storeAddress) {
+    const storeData = {
+      name: storeName,
+      manager: manager,
+      address: storeAddress
+    };
+
+    Store.create(storeData, (err, store) => {
+      if (err) {
+        next(err);
+      } else {
+        res.redirect('/profile');
+      }
+    });
+  } else {
+    const err = new Error('All fields required');
+    err.status = 400;
+    next(err);
+  }
 });
 
 router.get('/about', (req, res) => {
@@ -120,6 +151,7 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
     });
   } else if (accountType == 'manager' || accountType == 'Manager') {
     let orderHistory = Order.find();
+    let storeList = Store.find();
     orderHistory.exec((err, orders) => {
       if (err) {
         next(err);
@@ -128,11 +160,18 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
           if (err) {
             next(err);
           } else {
-            res.render('profile', {
-              title: 'Profile',
-              name: manager.name,
-              accountType: manager.accountType,
-              orderHistory: orders
+            storeList.exec((err, stores) => {
+              if (err) {
+                next(err);
+              } else {
+                res.render('profile', {
+                  title: 'Profile',
+                  name: manager.name,
+                  accountType: manager.accountType,
+                  orderHistory: orders,
+                  storeList: stores
+                });
+              }
             });
           }
         });

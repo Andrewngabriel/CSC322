@@ -25,6 +25,25 @@ function requiresJoinStore(req, res, next) {
   }
 }
 
+function requiresManagerAccess(req, res, next) {
+  if (
+    req.session.accountType == 'manager' ||
+    req.session.accountType == 'Manager'
+  ) {
+    next();
+  } else {
+    const err = new Error('Only Managers can access this page');
+    err.status = 401;
+    next(err);
+  }
+}
+
+function genRandomNum(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
 module.exports.loggedOut = loggedOut;
 module.exports.requiresLogin = requiresLogin;
 module.exports.requiresJoinStore = requiresJoinStore;
+module.exports.genRandomNum = genRandomNum;
+module.exports.requiresManagerAccess = requiresManagerAccess;

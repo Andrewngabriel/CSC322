@@ -21,26 +21,79 @@ block content
     
     hr
     
+    //- .row
+    //-   .col
+    //-     h3.text-center Order History
+    //-     br
+
+    //- .row  
+    //-   each order, val in orderHistory
+    //-     .col
+    //-       .card
+    //-         h5.card-header= ("Order #" + (val+1))
+    //-         .card-body
+    //-           h6.card-title= ("Order ID: " + order._id)
+    //-           p.card-text= ("Date: " + order.date)
+    //-           p.card-text= ("Address: " + order.customerAddress)
+    //-           p.card-text= ("Pizza Size: " + order.pizzaSize)
+    //-           p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
+    //-           - if (accountType == "customer")
+    //-             a.btn.btn-success(href="#") Rate
+    //-       br
+
+    //- Order History show/hide module
     .row
       .col
-        h3.text-center Order History
-        br
-    .row  
-      each order, val in orderHistory
-        .col
+        #accordion
           .card
-            h5.card-header= ("Order #" + (val+1))
-            .card-body
-              h6.card-title= ("Order ID: " + order._id)
-              p.card-text= ("Date: " + order.date)
-              p.card-text= ("Address: " + order.customerAddress)
-              p.card-text= ("Pizza Size: " + order.pizzaSize)
-              p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
-              - if (accountType == "customer")
-                a.btn.btn-success(href="#") Rate
-          br
+            #orderHistory.card-header
+              h5.mb-0.text-center
+                button.btn.btn-link(data-toggle='collapse', data-target='#orderList', aria-expanded='true', aria-controls='orderList')
+                  | Order History (Click to expand)
+            #orderList.collapse(aria-labelledby='orderHistory', data-parent='#accordion')
+              .card-body
+                each order, val in orderHistory
+                  .col
+                    .card
+                      h5.card-header= ("Order #" + (val+1))
+                      .card-body
+                        h6.card-title= ("Order ID: " + order._id)
+                        p.card-text= ("Date: " + order.date)
+                        p.card-text= ("Address: " + order.customerAddress)
+                        p.card-text= ("Pizza Size: " + order.pizzaSize)
+                        p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
+                        - if (accountType == "customer")
+                          a.btn.btn-success(href="#") Rate
+                    br
+    br
+
+    //- Store List show/hide module
+    - if (accountType == "manager" || accountType == "Manager")
+      .row
+        .col
+          #accordion1
+            .card
+              #stores.card-header
+                h5.mb-0.text-center
+                  button.btn.btn-link(data-toggle='collapse', data-target='#storeList', aria-expanded='false', aria-controls='storeList')
+                    | Store List
+              #storeList.collapse.show(aria-labelledby='stores', data-parent='#accordion1')
+                .card-body
+                  each store, val1 in storeList
+                    .col
+                      .card
+                        h5.card-header= ("Store Name " + store.name)
+                        .card-body
+                          h6.card-title= ("Manager ID: " + store.manager)
+                          p.card-text= ("Address: " + store.address)
+                      br
+    br
 
     .row.justify-content-center
       .col.text-center
-        - if (accountType == "customer" || accountType == "manager")
+        - if (accountType == "manager" || accountType == "Manager")
+          a.btn.btn-primary(href="/addStore") Add Store
+      
+      .col.text-center
+        - if (accountType == "customer" || accountType == "manager" || accountType == "Manager" || accountType == "Customer")
           a.btn.btn-danger(href="/complain") Complain
