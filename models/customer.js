@@ -47,6 +47,10 @@ const CustomerSchema = new Schema({
     type: Number,
     min: 1,
     max: 5
+  },
+  active: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -65,6 +69,10 @@ CustomerSchema.statics.authenticate = function(
       callback(err);
     } else if (!user) {
       const err = new Error('User not found.');
+      err.status = 401;
+      callback(err);
+    } else if (user.active == false) {
+      const err = new Error('User not activated yet');
       err.status = 401;
       callback(err);
     } else {

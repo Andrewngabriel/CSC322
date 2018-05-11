@@ -15,9 +15,10 @@ block content
       .col-3
         h3.text-center Account Type
         p.text-center #{accountType}
-      .col-3
-        h3.text-center Rating
-        p.text-center #{rating}
+      - if (accountType == "customer" || accountType == "delivery")
+        .col-3
+          h3.text-center Rating
+          p.text-center #{rating}
     
     hr
     
@@ -92,10 +93,10 @@ block content
               #stores.card-header
                 h5.mb-0.text-center
                   button.btn.btn-link(data-toggle='collapse', data-target='#storeList', aria-expanded='false', aria-controls='storeList')
-                    | Store List
+                    | Store List (Click to expand)
               #storeList.collapse.show(aria-labelledby='stores', data-parent='#accordion1')
                 .card-body
-                  each store, val1 in storeList
+                  each store in storeList
                     .col
                       .card
                         h5.card-header= ("Store Name " + store.name)
@@ -103,13 +104,38 @@ block content
                           h6.card-title= ("Manager ID: " + store.manager)
                           p.card-text= ("Address: " + store.address)
                       br
+      br
+      .row
+        .col
+          #accordion2
+            .card
+              #customers.card-header
+                h5.mb-0.text-center
+                  button.btn.btn-link(data-toggle='collapse', data-target='#customersList', aria-expanded='false', aria-controls='customersList')
+                    | Customers List (Click to expand)
+              #customersList.collapse.show(aria-labelledby='customers', data-parent='#accordion2')
+                .card-body
+                  each customer in customerList
+                    .col
+                      .card
+                        h5.card-header= ("Name " + customer.name)
+                        .card-body
+                          h6.card-title= ("Address: " + customer.address)
+                          p.card-text= ("Active Status: " + customer.active)
+                          form(method="POST")
+                              .form-group
+                                input.form-control(type="hidden" name='customerId' value=`${customer._id}`)
+                              button.btn.btn-primary(type="submit") Approve
+                              
+
+                      br
     br
 
     .row.justify-content-center
-      .col.text-center
+      .col.text-right
         - if (accountType == "manager" || accountType == "Manager")
           a.btn.btn-primary(href="/addStore") Add Store
       
-      .col.text-center
+      .col.text-left
         - if (accountType == "customer" || accountType == "manager" || accountType == "Manager" || accountType == "Customer")
           a.btn.btn-danger(href="/complain") Complain

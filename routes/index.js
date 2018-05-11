@@ -166,6 +166,7 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
   } else if (accountType == 'manager' || accountType == 'Manager') {
     let orderHistory = Order.find();
     let storeList = Store.find();
+    let customerList = Customer.find({ active: false });
     orderHistory.exec((err, orders) => {
       if (err) {
         next(err);
@@ -178,12 +179,15 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
               if (err) {
                 next(err);
               } else {
-                res.render('profile', {
-                  title: 'Profile',
-                  name: manager.name,
-                  accountType: manager.accountType,
-                  orderHistory: orders,
-                  storeList: stores
+                customerList.exec((err, customers) => {
+                  res.render('profile', {
+                    title: 'Profile',
+                    name: manager.name,
+                    accountType: manager.accountType,
+                    orderHistory: orders,
+                    storeList: stores,
+                    customerList: customers
+                  });
                 });
               }
             });
@@ -235,22 +239,41 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
 });
 
 router.post('/profile', (req, res, next) => {
-  let pizzaRating = req.body.pizzaRating;
-  let orderId = req.body.orderId;
-  Order.findById(orderId, (err, order) => {
-    if (err) {
-      next(err);
-    } else {
-      order.pizzaRating = pizzaRating;
-      order.save((err, updatedOrder) => {
-        if (err) {
-          next(err);
-        } else {
-          res.redirect('/profile');
-        }
-      });
-    }
-  });
+  let accountType = req.session.accountType;
+  if (accountType == 'customer' || accountType == 'Customer') {
+    let pizzaRating = req.body.pizzaRating;
+    let orderId = req.body.orderId;
+    Order.findById(orderId, (err, order) => {
+      if (err) {
+        next(err);
+      } else {
+        order.pizzaRating = pizzaRating;
+        order.save((err, updatedOrder) => {
+          if (err) {
+            next(err);
+          } else {
+            res.redirect('/profile');
+          }
+        });
+      }
+    });
+  } else if (accountType == 'manager' || accountType == 'Manager') {
+    let customerId = req.body.customerId;
+    Customer.findById(customerId, (err, customer) => {
+      if (err) {
+        next(err);
+      } else {
+        customer.active = true;
+        customer.save((err, updatedCustomer) => {
+          if (err) {
+            next(err);
+          } else {
+            res.redirect('/profile');
+          }
+        });
+      }
+    });
+  }
 });
 
 router.get('/login', (req, res) => {
@@ -345,10 +368,10 @@ router.post('/signup', (req, res, next) => {
         if (err) {
           next(err);
         } else {
-          req.session.userId = user._id;
-          req.session.address = user.address;
-          req.session.accountType = user.accountType;
-          res.redirect('/profile');
+          // req.session.userId = user._id;
+          // req.session.address = user.address;
+          // req.session.accountType = user.accountType;
+          res.redirect('/');
         }
       });
     } else if (accountType == 'manager') {
