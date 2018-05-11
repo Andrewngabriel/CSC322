@@ -30,6 +30,21 @@ const OrderSchema = new Schema({
     required: true,
     trim: true
   },
+  drink: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  salad: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  dough: {
+    type: String,
+    required: true,
+    trim: true
+  },
   delivery: {
     type: Schema.Types.ObjectId,
     ref: 'Delivery',

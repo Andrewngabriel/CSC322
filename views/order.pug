@@ -1,90 +1,96 @@
-
 extends layout.pug
 block content
   .jumbotron
     .container
         h1.display-4.text-center Order
+  
+  .row
+    .container
+      .col
+        h1 Menu
+        #accordion
+          .card
+            #headingOne.card-header
+              h5.mb-0
+                button.btn.btn-link.collapsed(data-toggle='collapse', data-target='#collapseOne', aria-expanded='false', aria-controls='collapseOne')
+                  | Topping
+            #collapseOne.collapse(aria-labelledby='headingOne', data-parent='#accordion')
+              .card-body
+                .row
+                  .col-sm-4.left
+                    img.img-responsive.img-rounded(src='static/img/menu/pizzas/olives.png' width='250', height='210')
+                    p Olives
+                  .col-sm-4.center
+                    img.img-responsive.img-rounded(src='static/img/menu/pizzas/plain.png' width='250', height='210')
+                    p Mozzarela Cheese
+                  .col-sm-4.right
+                    img.img-responsive.img-rounded(src='static/img/menu/pizzas/pepperoni.png' width='250', height='210')
+                    p Pepperoni
+          .card
+            #headingTwo.card-header
+              h5.mb-0
+                button.btn.btn-link.collapsed(data-toggle='collapse', data-target='#collapseTwo', aria-expanded='false', aria-controls='collapseTwo')
+                  | Drink
+            #collapseTwo.collapse(aria-labelledby='headingTwo', data-parent='#accordion')
+              .card-body
+                .row
+                  .col-sm-4.left
+                    img.img-responsive.img-rounded(src='static/img/menu/drinks/water.png' width='250', height='240')
+                    p Water
+                  .col-sm-4.center
+                    img.img-responsive.img-rounded(src='static/img/menu/drinks/soda.png' width='250', height='240')
+                    p Sada
+                  .col-sm-4.right
+                    img.img-responsive.img-rounded(src='static/img/menu/drinks/beer.png' width='250', height='240')
+                    p Beer
+          .card
+            #headingThree.card-header
+              h5.mb-0
+                button.btn.btn-link.collapsed(data-toggle='collapse', data-target='#collapseThree', aria-expanded='false', aria-controls='collapseThree')
+                  | Cook & Salad
+            #collapseThree.collapse(aria-labelledby='headingThree', data-parent='#accordion')
+              .card-body
+                .row
+                  .col-sm-4.left
+                    img.img-responsive.img-rounded(src='static/img/menu/cooks/salad.png' width='250', height='220')
+                    p Salad
+                  .col-sm-4.center
+                    img.img-responsive.img-rounded(src='static/img/menu/cooks/tacos.png' width='250', height='220')
+                    p Tacos
+                  .col-sm-4.right
+                    img.img-responsive.img-rounded(src='static/img/menu/cooks/soup.png' width='250', height='220')
+                    p Soup
+          .card
+            #headingFour.card-header
+              h5.mb-0
+                button.btn.btn-link.collapsed(data-toggle='collapse', data-target='#collapseFour', aria-expanded='false', aria-controls='collapseFour')
+                  | Dough
+            #collapseFour.collapse(aria-labelledby='headingFour', data-parent='#accordion')
+              .card-body
+                .row
+                  .col-sm-6.left
+                    img.img-responsive.img-rounded(src='static/img/menu/dough/american.png' width='350', height='310')
+                    p America
+                  .col-sm-6.right
+                    img.img-responsive.img-rounded(src='static/img/menu/dough/italian.png' width='350', height='310')
+                    p Italian
+    
   .row.justify-content-center
     .col-6.text-center
       form(method="POST")
-
-      nav.navbar.navbar-default.navbar-fixed-top
-  .container-fluid
-  h1 Menu
-  #accordion
-    .card
-      #headingOne.card-header
-        h5.mb-0
-          button.btn.btn-link.collapsed(data-toggle='collapse', data-target='#collapseOne', aria-expanded='false', aria-controls='collapseOne')
-            | Topping
-      #collapseOne.collapse(aria-labelledby='headingOne', data-parent='#accordion')
-        .card-body
-          .row
-            .col-sm-4.left
-              img.img-responsive.img-rounded(src='static/img/menu/pizzas/olives.png' width='250', height='210')
-              p Olives
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-            .col-sm-4.center
-              img.img-responsive.img-rounded(src='static/img/menu/pizzas/plain.png' width='250', height='210')
-              p Mozzarela Cheese
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-            .col-sm-4.right
-              img.img-responsive.img-rounded(src='static/img/menu/pizzas/pepperoni.png' width='250', height='210')
-              p Pepperoni
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-    .card
-      #headingTwo.card-header
-        h5.mb-0
-          button.btn.btn-link.collapsed(data-toggle='collapse', data-target='#collapseTwo', aria-expanded='false', aria-controls='collapseTwo')
-            | Drink
-      #collapseTwo.collapse(aria-labelledby='headingTwo', data-parent='#accordion')
-        .card-body
-          .row
-            .col-sm-4.left
-              img.img-responsive.img-rounded(src='static/img/menu/drinks/water.png' width='250', height='240')
-              p Water
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-            .col-sm-4.center
-              img.img-responsive.img-rounded(src='static/img/menu/drinks/soda.png' width='250', height='240')
-              p Sada
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-            .col-sm-4.right
-              img.img-responsive.img-rounded(src='static/img/menu/drinks/beer.png' width='250', height='240')
-              p Beer
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-    .card
-      #headingThree.card-header
-        h5.mb-0
-          button.btn.btn-link.collapsed(data-toggle='collapse', data-target='#collapseThree', aria-expanded='false', aria-controls='collapseThree')
-            | Cook & Salad
-      #collapseThree.collapse(aria-labelledby='headingThree', data-parent='#accordion')
-        .card-body
-          .row
-            .col-sm-4.left
-              img.img-responsive.img-rounded(src='static/img/menu/cooks/salad.png' width='250', height='220')
-              p Salad
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-            .col-sm-4.center
-              img.img-responsive.img-rounded(src='static/img/menu/cooks/tacos.png' width='250', height='220')
-              p Tacos
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-            .col-sm-4.right
-              img.img-responsive.img-rounded(src='static/img/menu/cooks/soup.png' width='250', height='220')
-              p Soup
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-    .card
-      #headingFour.card-header
-        h5.mb-0
-          button.btn.btn-link.collapsed(data-toggle='collapse', data-target='#collapseFour', aria-expanded='false', aria-controls='collapseFour')
-            | Dough
-      #collapseFour.collapse(aria-labelledby='headingFour', data-parent='#accordion')
-        .card-body
-          .row
-            .col-sm-6.left
-              img.img-responsive.img-rounded(src='static/img/menu/dough/american.png' width='350', height='310')
-              p America
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
-            .col-sm-6.right
-              img.img-responsive.img-rounded(src='static/img/menu/dough/italian.png' width='350', height='310')
-              p Italian
-              a.btn.btn-danger.btn-lg.active(href='#', role='button', aria-pressed='true') Order Now
+        form
+          .form-group
+            label Pizza Size
+            select.form-control(name="pizzaSize")
+              option(value="Small") Small
+              option(value="Medium") Medium
+              option(value="Large") Large
+          .form-group
+            input.form-control(type="text" placeholder="Toppings (ex. Cheese, Pepperoni, Olives)" name="toppings")
+          .form-group
+            input.form-control(type="text" placeholder="Drink" name="drink")
+          .form-group
+            input.form-control(type="text" placeholder="Salad" name="salad")
+          .form-group
+            input.form-control(type="text" placeholder="Dough Type" name="dough")
+          button.btn.btn-primary(type="submit") Submit Order
