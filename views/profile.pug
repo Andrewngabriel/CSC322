@@ -19,6 +19,22 @@ block content
         .col-3
           h3.text-center Rating
           p.text-center #{rating}
+      - if (accountType == "customer")
+        .col-3
+          h3.text-center Store
+          p.text-center #{storeName}
+      - if (accountType == "delivery")
+        .col-3
+          h3.text-center Availability: #{availability}
+          form(method="POST")
+            form
+              .form-group
+                select.form-control(name='availability')
+                  option()
+                  option(value="true") Active
+                  option(value="false") Not Active
+              button.btn.btn-primary(type="submit") Update
+
     
     hr
     
@@ -113,21 +129,20 @@ block content
                 h5.mb-0.text-center
                   button.btn.btn-link(data-toggle='collapse', data-target='#customersList', aria-expanded='false', aria-controls='customersList')
                     | Customers List (Click to expand)
-              #customersList.collapse.show(aria-labelledby='customers', data-parent='#accordion2')
+              #customersList.collapse(aria-labelledby='customers', data-parent='#accordion2')
                 .card-body
                   each customer in customerList
                     .col
                       .card
-                        h5.card-header= ("Name " + customer.name)
+                        h5.card-header= ("Name: " + customer.name)
                         .card-body
                           h6.card-title= ("Address: " + customer.address)
                           p.card-text= ("Active Status: " + customer.active)
+                          p.card-text= ("Blacklist Status: " + customer.blacklist)
                           form(method="POST")
                               .form-group
                                 input.form-control(type="hidden" name='customerId' value=`${customer._id}`)
                               button.btn.btn-primary(type="submit") Approve
-                              
-
                       br
     br
 

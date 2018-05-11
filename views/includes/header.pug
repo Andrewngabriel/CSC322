@@ -6,13 +6,10 @@ nav.navbar.navbar-expand-sm.navbar-dark.fixed-top.bg-dark
 
     #navbarsExampleDefault.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-            li.nav-item
-                a.nav-link(href="/") Home           
-            
-            li.nav-item
-                a.nav-link(href="/about") About 
-            
-            li.nav-item
+            - if (accountType == "customer")
+                li.nav-item
+                    a.nav-link(href="/") Home   
+                li.nav-item
                     a.nav-link(href="/order") Order
         ul.navbar-nav
             if accountType == "visitor"

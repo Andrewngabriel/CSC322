@@ -9,12 +9,12 @@ const Employee = require('../models/employee');
 const Store = require('../models/store');
 const mid = require('../middleware'); // Middleware helper functions for authentication
 
-router.get('/', (req, res) => {
+router.get('/', mid.requiresCustomerAccess, (req, res, next) => {
   res.render('index', { title: 'Home' });
 });
 
 // If user chooses visitor, then we create an instance of customer model with visitor accountType
-router.post('/', (req, res, next) => {
+router.post('/', mid.requiresCustomerAccess, (req, res, next) => {
   const userData = {
     email: `${mid.genRandomNum(1, 10000)}@aamm.com`,
     name: 'Visitor',
@@ -157,6 +157,7 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
               address: user.address,
               accountType: user.accountType,
               rating: user.rating,
+              storeName: user.storeJoinedName,
               orderHistory: orders
             });
           }
@@ -166,7 +167,10 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
   } else if (accountType == 'manager' || accountType == 'Manager') {
     let orderHistory = Order.find();
     let storeList = Store.find();
-    let customerList = Customer.find({ active: false });
+    let customerList = Customer.find({
+      active: false,
+      accountType: 'customer'
+    });
     orderHistory.exec((err, orders) => {
       if (err) {
         next(err);
@@ -209,7 +213,8 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
               title: 'Profile',
               name: delivery.name,
               accountType: accountType,
-              orderHistory: orders
+              orderHistory: orders,
+              availability: delivery.availability
             });
           }
         });
@@ -273,6 +278,22 @@ router.post('/profile', (req, res, next) => {
         });
       }
     });
+  } else if (accountType == 'delivery' || accountType == 'Delivery') {
+    let deliveryAvailability = req.body.availability;
+    Delivery.findById(req.session.userId, (err, delivery) => {
+      if (err) {
+        next(err);
+      } else {
+        delivery.availability = deliveryAvailability;
+        delivery.save((err, updatedDelivery) => {
+          if (err) {
+            next(err);
+          } else {
+            res.redirect('/profile');
+          }
+        });
+      }
+    });
   }
 });
 
@@ -288,9 +309,7 @@ router.post('/login', (req, res, next) => {
   if (email && password && accountType) {
     if (accountType == 'customer') {
       Customer.authenticate(email, password, accountType, (err, user) => {
-        if (err || !user) {
-          const err = new Error('Wrong email or password or account type');
-          err.status = 401;
+        if (err) {
           next(err);
         } else {
           req.session.userId = user._id;

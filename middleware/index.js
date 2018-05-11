@@ -38,6 +38,17 @@ function requiresManagerAccess(req, res, next) {
   }
 }
 
+function requiresCustomerAccess(req, res, next) {
+  let accountType = req.session.accountType;
+  if (accountType == 'customer' || accountType == 'Customer') {
+    next();
+  } else {
+    const err = new Error('Only Customers can access this page');
+    err.status = 401;
+    next(err);
+  }
+}
+
 function genRandomNum(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
@@ -47,3 +58,4 @@ module.exports.requiresLogin = requiresLogin;
 module.exports.requiresJoinStore = requiresJoinStore;
 module.exports.genRandomNum = genRandomNum;
 module.exports.requiresManagerAccess = requiresManagerAccess;
+module.exports.requiresCustomerAccess = requiresCustomerAccess;

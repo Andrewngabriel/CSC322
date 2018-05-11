@@ -19,6 +19,11 @@ const StoreSchema = new Schema({
     min: 0,
     max: 50,
     trim: true
+  },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5
   }
 });
 
