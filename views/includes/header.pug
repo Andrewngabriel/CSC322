@@ -11,6 +11,13 @@ nav.navbar.navbar-expand-sm.navbar-dark.fixed-top.bg-dark
                     a.nav-link(href="/") Home   
                 li.nav-item
                     a.nav-link(href="/order") Order
+                //search bar    
+        form.navbar-form(role='search')
+            .input-group.col-md-12
+              input.search-query.form-control(type='text', placeholder='Search', aria-label='Search')
+              span.input-group-btn
+
+ 
         ul.navbar-nav
             if accountType == "visitor"
                 li.nav-item
@@ -33,3 +40,8 @@ nav.navbar.navbar-expand-sm.navbar-dark.fixed-top.bg-dark
                     a.btn.btn-outline-light(href="/login" style="margin-right: 10px") Login
                 li.nav-item
                     a.btn.btn-outline-primary(href="/signup") Sign up
+        
+        //input.form-control(type='text', placeholder='Search', aria-label='Search')
+        
+
+
