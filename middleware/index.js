@@ -16,7 +16,7 @@ function requiresLogin(req, res, next) {
 }
 
 function requiresJoinStore(req, res, next) {
-  if (req.session && req.session.store) {
+  if (req.session && req.session.storeJoinedId) {
     next();
   } else {
     const err = new Error('You must join a store before being able to order.');

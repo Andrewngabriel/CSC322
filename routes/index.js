@@ -50,7 +50,26 @@ router.get('/stores', (req, res) => {
   });
 });
 
-router.post('/stores', (req, res) => {});
+router.post('/stores', (req, res, next) => {
+  let storeName = req.body.storeName;
+  let storeId = req.body.storeID;
+  Customer.findById(req.session.userId, (err, customer) => {
+    if (err) {
+      next(err);
+    } else {
+      customer.storeJoinedName = storeName;
+      customer.storeJoinedId = storeId;
+      customer.save((err, updatedCustomer) => {
+        if (err) {
+          next(err);
+        } else {
+          req.session.storeJoinedId = updatedCustomer.storeJoinedId;
+          res.redirect('/order');
+        }
+      });
+    }
+  });
+});
 
 router.get('/addStore', mid.requiresManagerAccess, (req, res) => {
   res.render('addStore', { title: 'Add a Store' });
@@ -98,7 +117,7 @@ router.post('/order', mid.requiresJoinStore, (req, res, next) => {
       date: new Date(),
       customerId: req.session.userId,
       customerAddress: req.session.address,
-      store: req.session.store,
+      store: req.session.storeJoinedId,
       pizzaSize: pizzaSize,
       pizzaToppings: toppings
     };
@@ -124,11 +143,6 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
   let accountType = req.session.accountType;
   if (accountType == 'customer' || accountType == 'visitor') {
     let orderHistory = Order.find({ customerId: req.session.userId });
-    /*
-    orderHistory.select(
-      'ObjectId date customerAddress pizzaSize pizzaToppings pizzaRating deliveryRating customerRating'
-    );
-    */
     orderHistory.exec((err, orders) => {
       if (err) {
         next(err);

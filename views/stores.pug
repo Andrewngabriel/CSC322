@@ -15,11 +15,11 @@ block content
               .card-body
                 //- h6.card-title= ("Manager ID: " + store.manager)
                 p.card-text= ("Address: " + store.address)
-                a.btn.btn-primary(href="#" name="") Join Store
-            br
-        //- .card(style="width: 20rem")
-        //-   img.card-img-top(src="http://via.placeholder.com/286x140")
-        //-   .card-body
-        //-     h5.card-title Store Title
-        //-     p.card-text Store Info
-        //-     a.btn.btn-primary(href="#") Join Store
+                form(method="POST")
+                  form
+                    .form-group
+                      input.form-control(type="hidden" name='storeID' value=`${store._id}`)
+                    .form-group
+                      input.form-control(type="hidden" name='storeName' value=`${store.name}`)
+                    button.btn.btn-primary(type="submit") Join Store
+                    br
