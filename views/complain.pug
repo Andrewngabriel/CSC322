@@ -1,6 +1,22 @@
+
 extends layout.pug
 block content
+  .jumbotron
+      .container
+          h1.display-4.text-center Complain
   .container
-    .row
-      .col
-        h3.display-4.text-center Complain
+    .col
+      .row-3
+        h3.text-left Name
+        p.text-center #{name}
+        input.form-control(type="text" placeholder="" name="name")
+
+      .row-3
+        h3.text-left Order Number
+        p.text-center #{order}
+        input.form-control(type="text" placeholder="" name="order")
+
+      .row-3
+        h3.text-left complain
+        input.form-control(type="text" placeholder="What is your complain?" name="complain")
+        button.btn.btn-primary(type="submit") Submit

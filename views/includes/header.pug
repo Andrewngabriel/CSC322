@@ -7,13 +7,23 @@ nav.navbar.navbar-expand-sm.navbar-dark.fixed-top.bg-dark
     #navbarsExampleDefault.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
             li.nav-item
-                a.nav-link(href="/") Home           
-            
+                a.nav-link(href="/") Home
+
             li.nav-item
-                a.nav-link(href="/about") About 
-            
+                a.nav-link(href="/about") About
+
+                li.nav-item
+                   a.nav-link(href="/address") Address
+
+            li.nav-item
+                a.nav-link(href="/complain") Complain
+
+
+
             li.nav-item
                     a.nav-link(href="/order") Order
+
+
         ul.navbar-nav
             if accountType == "visitor"
                 li.nav-item
