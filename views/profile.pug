@@ -8,39 +8,187 @@ block content
       .col-3
         h3.text-center Name
         p.text-center #{name}
-      - if (accountType == "Customer")
+      - if (accountType == "customer")
         .col-3
           h3.text-center Address
           p.text-center #{address}
       .col-3
         h3.text-center Account Type
         p.text-center #{accountType}
-      .col-3
-        h3.text-center Rating
-        p.text-center #{rating}
+      - if (accountType == "customer" || accountType == "delivery")
+        .col-3
+          h3.text-center Rating
+          p.text-center #{rating}
+      - if (accountType == "customer" || accountType == "visitor")
+        .col-3
+          h3.text-center Store
+          p.text-center #{storeName}
+      - if (accountType == "delivery")
+        .col-3
+          h3.text-center Availability: #{availability}
+          form(method="POST")
+            form
+              .form-group
+                select.form-control(name='availability')
+                  option()
+                  option(value="true") Active
+                  option(value="false") Not Active
+              button.btn.btn-primary(type="submit") Update
+
     
     hr
     
+    //- .row
+    //-   .col
+    //-     h3.text-center Order History
+    //-     br
+
+    //- .row  
+    //-   each order, val in orderHistory
+    //-     .col
+    //-       .card
+    //-         h5.card-header= ("Order #" + (val+1))
+    //-         .card-body
+    //-           h6.card-title= ("Order ID: " + order._id)
+    //-           p.card-text= ("Date: " + order.date)
+    //-           p.card-text= ("Address: " + order.customerAddress)
+    //-           p.card-text= ("Pizza Size: " + order.pizzaSize)
+    //-           p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
+    //-           - if (accountType == "customer")
+    //-             a.btn.btn-success(href="#") Rate
+    //-       br
+
+    //- Order History show/hide module
     .row
       .col
-        h3.text-center Order History
-        br
-    .row  
-      each order, val in orderHistory
-        .col
+        #accordion
           .card
-            h5.card-header= ("Order #" + (val+1))
-            .card-body
-              h6.card-title= ("Order ID: " + order._id)
-              p.card-text= ("Date: " + order.date)
-              p.card-text= ("Address: " + order.customerAddress)
-              p.card-text= ("Pizza Size: " + order.pizzaSize)
-              p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
-              - if (accountType == "Customer")
-                a.btn.btn-success(href="#") Rate
-          br
+            #orderHistory.card-header
+              h5.mb-0.text-center
+                button.btn.btn-link(data-toggle='collapse', data-target='#orderList', aria-expanded='true', aria-controls='orderList')
+                  | Order History (Click to expand)
+            #orderList.collapse(aria-labelledby='orderHistory', data-parent='#accordion')
+              .card-body
+                each order, val in orderHistory
+                  .col
+                    .card
+                      h5.card-header= ("Order #" + (val+1))
+                      .card-body
+                        h6.card-title= ("Order ID: " + order._id)
+                        p.card-text= ("Date: " + order.date)
+                        p.card-text= ("Address: " + order.customerAddress)
+                        p.card-text= ("Pizza Size: " + order.pizzaSize)
+                        p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
+                        if order.status == false
+                          p.card-text= ("Order Status: In Progress")
+                        else
+                          p.card-text= ("Order Status: Completed")
+                        - if (!(order.pizzaRating == undefined))
+                          p.card-text= ("Pizza Rating: " + order.pizzaRating)
+                        if accountType == "customer"
+                          - if (order.status) 
+                            - if (order.pizzaRating == undefined)
+                              form(method="POST")
+                                form
+                                  .form-group
+                                    label Pizza Rating:
+                                    select.form-control(name='pizzaRating')
+                                      option()
+                                      option(value=1) 1
+                                      option(value=2) 2
+                                      option(value=3) 3
+                                      option(value=4) 4
+                                      option(value=5) 5
+                                  .form-group
+                                    label Store Rating:
+                                    select.form-control(name='storeRating')
+                                      option()
+                                      option(value=1) 1
+                                      option(value=2) 2
+                                      option(value=3) 3
+                                      option(value=4) 4
+                                      option(value=5) 5
+                                  .form-group
+                                    label Delivery Rating:
+                                    select.form-control(name='deliveryRating')
+                                      option()
+                                      option(value=1) 1
+                                      option(value=2) 2
+                                      option(value=3) 3
+                                      option(value=4) 4
+                                      option(value=5) 5
+                                  .form-group
+                                    input.form-control(type="hidden" name='orderId' value=`${order._id}`)
+                                    input.form-control(type="hidden" name='storeId' value=`${order.store}`)
+                                    input.form-control(type="hidden" name='deliveryId' value=`${order.delivery}`)
+                                  button.btn.btn-primary(type="submit") Submit Review
+                        else if accountType == "manager"
+                          - if (order.status == false)
+                            form(method="POST")
+                                form
+                                  .form-group
+                                    label Available Delivery Personnel
+                                    input.form-control(type="hidden" name='orderId' value=`${order._id}`)
+                                    select.form-control(name='deliveryPerson')
+                                      option()
+                                      each deliveryPerson in deliveryPersonnel
+                                        option(value=`${deliveryPerson._id}`)= `${deliveryPerson.name}`
+                                  button.btn.btn-primary(type="submit") Assign
+                    br
+    br
+
+    //- Store List show/hide module
+    - if (accountType == "manager" || accountType == "Manager")
+      .row
+        .col
+          #accordion1
+            .card
+              #stores.card-header
+                h5.mb-0.text-center
+                  button.btn.btn-link(data-toggle='collapse', data-target='#storeList', aria-expanded='false', aria-controls='storeList')
+                    | Store List (Click to expand)
+              #storeList.collapse.show(aria-labelledby='stores', data-parent='#accordion1')
+                .card-body
+                  each store in storeList
+                    .col
+                      .card
+                        h5.card-header= ("Store Name " + store.name)
+                        .card-body
+                          h6.card-title= ("Manager ID: " + store.manager)
+                          p.card-text= ("Address: " + store.address)
+                          p.card-text= ("Rating: " + store.rating)
+                      br
+      br
+      .row
+        .col
+          #accordion2
+            .card
+              #customers.card-header
+                h5.mb-0.text-center
+                  button.btn.btn-link(data-toggle='collapse', data-target='#customersList', aria-expanded='false', aria-controls='customersList')
+                    | Customers List (Click to expand)
+              #customersList.collapse(aria-labelledby='customers', data-parent='#accordion2')
+                .card-body
+                  each customer in customerList
+                    .col
+                      .card
+                        h5.card-header= ("Name: " + customer.name)
+                        .card-body
+                          h6.card-title= ("Address: " + customer.address)
+                          p.card-text= ("Active Status: " + customer.active)
+                          p.card-text= ("Blacklist Status: " + customer.blacklist)
+                          form(method="POST")
+                              .form-group
+                                input.form-control(type="hidden" name='customerId' value=`${customer._id}`)
+                              button.btn.btn-primary(type="submit") Approve
+                      br
+    br
 
     .row.justify-content-center
-      .col.text-center
-        - if (accountType == "Customer" || accountType == "Manager")
+      .col.text-right
+        - if (accountType == "manager" || accountType == "Manager")
+          a.btn.btn-primary(href="/addStore") Add Store
+      
+      .col.text-left
+        - if (accountType == "customer" || accountType == "manager" || accountType == "Manager" || accountType == "Customer")
           a.btn.btn-danger(href="/complain") Complain

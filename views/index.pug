@@ -6,7 +6,15 @@ block content
       h1.display-4.text-center Welcome to Pizza Delivery System
 
   .container
-    // Example row of columns
     .row.justify-content-center
       .col.text-center
-        a.btn.btn-lg.btn-primary(href="/order") Order Now
+        if currentUser
+          a.btn.btn-lg.btn-primary(href="/address") Begin Order
+        else
+          a.btn.btn-lg.btn-primary(href="/login" style="margin: 10px") Login
+          a.btn.btn-lg.btn-primary(href="/signup" style="margin: 10px") Sign up
+          br
+          form(method="POST")
+            form
+              button.btn.btn-secondary.btn-lg(type="submit") Visitor
+        
