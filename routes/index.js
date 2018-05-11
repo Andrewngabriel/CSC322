@@ -125,7 +125,7 @@ router.post('/order', mid.requiresJoinStore, (req, res, next) => {
       if (err) {
         next(err);
       } else {
-        res.redirect('/');
+        res.redirect('/profile');
       }
     });
   } else {
@@ -234,6 +234,25 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
   }
 });
 
+router.post('/profile', (req, res, next) => {
+  let pizzaRating = req.body.pizzaRating;
+  let orderId = req.body.orderId;
+  Order.findById(orderId, (err, order) => {
+    if (err) {
+      next(err);
+    } else {
+      order.pizzaRating = pizzaRating;
+      order.save((err, updatedOrder) => {
+        if (err) {
+          next(err);
+        } else {
+          res.redirect('/profile');
+        }
+      });
+    }
+  });
+});
+
 router.get('/login', (req, res) => {
   res.render('login', { title: 'Login' });
 });
@@ -254,6 +273,7 @@ router.post('/login', (req, res, next) => {
           req.session.userId = user._id;
           req.session.address = user.address;
           req.session.accountType = user.accountType;
+          req.session.storeJoinedId = user.storeJoinedId;
           res.redirect('/profile');
         }
       });

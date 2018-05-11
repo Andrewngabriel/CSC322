@@ -62,8 +62,24 @@ block content
                         p.card-text= ("Address: " + order.customerAddress)
                         p.card-text= ("Pizza Size: " + order.pizzaSize)
                         p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
+                        - if (!(order.pizzaRating == undefined))
+                          p.card-text= ("Pizza Rating: " + order.pizzaRating)
                         - if (accountType == "customer")
-                          a.btn.btn-success(href="#") Rate
+                          - if (order.pizzaRating == undefined)
+                            form(method="POST")
+                              form
+                                .form-group
+                                  label Pizza Rating:
+                                  select.form-control(name='pizzaRating')
+                                    option()
+                                    option(value=1) 1
+                                    option(value=2) 2
+                                    option(value=3) 3
+                                    option(value=4) 4
+                                    option(value=5) 5
+                                .form-group
+                                  input.form-control(type="hidden" name='orderId' value=`${order._id}`)
+                                button.btn.btn-primary(type="submit") Submit Review
                     br
     br
 
