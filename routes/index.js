@@ -111,6 +111,9 @@ router.get('/order', (req, res) => {
 router.post('/order', mid.requiresJoinStore, (req, res, next) => {
   let pizzaSize = req.body.pizzaSize;
   let toppings = req.body.toppings;
+  let drink = req.body.drink;
+  let salad = req.body.salad;
+  let dough = req.body.dough;
 
   if (pizzaSize && toppings) {
     const orderData = {
@@ -119,7 +122,10 @@ router.post('/order', mid.requiresJoinStore, (req, res, next) => {
       customerAddress: req.session.address,
       store: req.session.storeJoinedId,
       pizzaSize: pizzaSize,
-      pizzaToppings: toppings
+      pizzaToppings: toppings,
+      drink: drink,
+      salad: salad,
+      dough: dough
     };
     Order.create(orderData, (err, order) => {
       if (err) {
@@ -360,20 +366,45 @@ router.post('/profile', (req, res, next) => {
     }
   } else if (accountType == 'delivery' || accountType == 'Delivery') {
     let deliveryAvailability = req.body.availability;
-    Delivery.findById(req.session.userId, (err, delivery) => {
-      if (err) {
-        next(err);
-      } else {
-        delivery.availability = deliveryAvailability;
-        delivery.save((err, updatedDelivery) => {
-          if (err) {
-            next(err);
-          } else {
-            res.redirect('/profile');
-          }
-        });
-      }
-    });
+    let customerRating = req.body.customerRating;
+    let orderId = req.body.orderId;
+    if (deliveryAvailability) {
+      Delivery.findById(req.session.userId, (err, delivery) => {
+        if (err) {
+          next(err);
+        } else {
+          delivery.availability = deliveryAvailability;
+          delivery.save((err, updatedDelivery) => {
+            if (err) {
+              next(err);
+            } else {
+              res.redirect('/profile');
+            }
+          });
+        }
+      });
+    } else if (customerRating) {
+      Order.findById(orderId, (err, order) => {
+        if (err) {
+          next(err);
+        } else {
+          Customer.findById(order.customerId, (err, customer) => {
+            if (err) {
+              next(err);
+            } else {
+              customer.rating = customerRating;
+              customer.save((err, updatedCustomer) => {
+                if (err) {
+                  next(err);
+                } else {
+                  res.redirect('/profile');
+                }
+              });
+            }
+          });
+        }
+      });
+    }
   }
 });
 

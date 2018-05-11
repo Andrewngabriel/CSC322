@@ -79,6 +79,9 @@ block content
                         p.card-text= ("Address: " + order.customerAddress)
                         p.card-text= ("Pizza Size: " + order.pizzaSize)
                         p.card-text= ("Pizza Toppings: " + order.pizzaToppings)
+                        p.card-text= ("Drink: " + order.drink)
+                        p.card-text= ("Salad: " + order.salad)
+                        p.card-text= ("Dough: " + order.dough)
                         if order.status == false
                           p.card-text= ("Order Status: In Progress")
                         else
@@ -134,6 +137,21 @@ block content
                                       each deliveryPerson in deliveryPersonnel
                                         option(value=`${deliveryPerson._id}`)= `${deliveryPerson.name}`
                                   button.btn.btn-primary(type="submit") Assign
+                        else if accountType == "delivery"
+                          - if (order.status == true)
+                            form(method="POST")
+                              form
+                                .form-group
+                                  label Rate Customer
+                                  input.form-control(type="hidden" name='orderId' value=`${order._id}`)
+                                  select.form-control(name='customerRating')
+                                    option()
+                                    option(value=1) 1
+                                    option(value=2) 2
+                                    option(value=3) 3
+                                    option(value=4) 4
+                                    option(value=5) 5
+                                button.btn.btn-primary(type="submit") Submit
                     br
     br
 
