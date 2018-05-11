@@ -6,16 +6,17 @@ const Manager = require('../models/manager');
 const Delivery = require('../models/delivery');
 const Cook = require('../models/cook');
 const Employee = require('../models/employee');
+const Store = require('../models/store');
 const mid = require('../middleware'); // Middleware helper functions for authentication
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   res.render('index', { title: 'Home' });
 });
 
 // If user chooses visitor, then we create an instance of customer model with visitor accountType
 router.post('/', (req, res, next) => {
   const userData = {
-    email: `${Math.random()}@visitor.com`,
+    email: `${mid.genRandomNum(1, 10000)}@aamm.com`,
     name: 'Visitor',
     address: 'Visitor Address',
     password: 'visitor',
@@ -32,14 +33,13 @@ router.post('/', (req, res, next) => {
       res.redirect('./address');
     }
   });
-  // res.render('address', { title: 'Address' });
 });
 
 router.get('/address', (req, res) => {
   res.render('address', { title: 'Address' });
 });
 
-router.get('/stores', (req, res) => {
+router.get('/stores', (req, res, next) => {
   let storeList = Store.find();
   storeList.exec((err, stores) => {
     if (err) {
@@ -48,6 +48,56 @@ router.get('/stores', (req, res) => {
       res.render('stores', { title: 'Stores', storeList: stores });
     }
   });
+});
+
+router.post('/stores', (req, res, next) => {
+  let storeName = req.body.storeName;
+  let storeId = req.body.storeID;
+  Customer.findById(req.session.userId, (err, customer) => {
+    if (err) {
+      next(err);
+    } else {
+      customer.storeJoinedName = storeName;
+      customer.storeJoinedId = storeId;
+      customer.save((err, updatedCustomer) => {
+        if (err) {
+          next(err);
+        } else {
+          req.session.storeJoinedId = updatedCustomer.storeJoinedId;
+          res.redirect('/order');
+        }
+      });
+    }
+  });
+});
+
+router.get('/addStore', mid.requiresManagerAccess, (req, res) => {
+  res.render('addStore', { title: 'Add a Store' });
+});
+
+router.post('/addStore', mid.requiresManagerAccess, (req, res, next) => {
+  let storeName = req.body.storeName;
+  let manager = req.session.userId;
+  let storeAddress = req.body.address;
+  if (storeName && manager && storeAddress) {
+    const storeData = {
+      name: storeName,
+      manager: manager,
+      address: storeAddress
+    };
+
+    Store.create(storeData, (err, store) => {
+      if (err) {
+        next(err);
+      } else {
+        res.redirect('/profile');
+      }
+    });
+  } else {
+    const err = new Error('All fields required');
+    err.status = 400;
+    next(err);
+  }
 });
 
 router.get('/about', (req, res) => {
@@ -67,7 +117,7 @@ router.post('/order', mid.requiresJoinStore, (req, res, next) => {
       date: new Date(),
       customerId: req.session.userId,
       customerAddress: req.session.address,
-      store: req.session.store,
+      store: req.session.storeJoinedId,
       pizzaSize: pizzaSize,
       pizzaToppings: toppings
     };
@@ -75,7 +125,7 @@ router.post('/order', mid.requiresJoinStore, (req, res, next) => {
       if (err) {
         next(err);
       } else {
-        res.redirect('/');
+        res.redirect('/profile');
       }
     });
   } else {
@@ -93,11 +143,6 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
   let accountType = req.session.accountType;
   if (accountType == 'customer' || accountType == 'visitor') {
     let orderHistory = Order.find({ customerId: req.session.userId });
-    /*
-    orderHistory.select(
-      'ObjectId date customerAddress pizzaSize pizzaToppings pizzaRating deliveryRating customerRating'
-    );
-    */
     orderHistory.exec((err, orders) => {
       if (err) {
         next(err);
@@ -112,6 +157,7 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
               address: user.address,
               accountType: user.accountType,
               rating: user.rating,
+              storeName: user.storeJoinedName,
               orderHistory: orders
             });
           }
@@ -120,6 +166,12 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
     });
   } else if (accountType == 'manager' || accountType == 'Manager') {
     let orderHistory = Order.find();
+    let storeList = Store.find();
+    let customerList = Customer.find({
+      active: false,
+      accountType: 'customer'
+    });
+    let deliveryList = Delivery.find({ availability: true });
     orderHistory.exec((err, orders) => {
       if (err) {
         next(err);
@@ -128,11 +180,28 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
           if (err) {
             next(err);
           } else {
-            res.render('profile', {
-              title: 'Profile',
-              name: manager.name,
-              accountType: manager.accountType,
-              orderHistory: orders
+            storeList.exec((err, stores) => {
+              if (err) {
+                next(err);
+              } else {
+                customerList.exec((err, customers) => {
+                  if (err) {
+                    next(err);
+                  } else {
+                    deliveryList.exec((err, deliveryPeople) => {
+                      res.render('profile', {
+                        title: 'Profile',
+                        name: manager.name,
+                        accountType: manager.accountType,
+                        orderHistory: orders,
+                        storeList: stores,
+                        customerList: customers,
+                        deliveryPersonnel: deliveryPeople
+                      });
+                    });
+                  }
+                });
+              }
             });
           }
         });
@@ -152,7 +221,9 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
               title: 'Profile',
               name: delivery.name,
               accountType: accountType,
-              orderHistory: orders
+              orderHistory: orders,
+              availability: delivery.availability,
+              rating: delivery.rating
             });
           }
         });
@@ -181,6 +252,131 @@ router.get('/profile', mid.requiresLogin, (req, res, next) => {
   }
 });
 
+router.post('/profile', (req, res, next) => {
+  let accountType = req.session.accountType;
+  if (accountType == 'customer' || accountType == 'Customer') {
+    let pizzaRating = req.body.pizzaRating;
+    let storeRating = req.body.storeRating;
+    let deliveryRating = req.body.deliveryRating;
+    let orderId = req.body.orderId;
+    let storeId = req.body.storeId;
+    let deliveryId = req.body.deliveryId;
+
+    // Update Store Rating
+    Store.findById(storeId, (err, store) => {
+      if (err) {
+        next(err);
+      } else {
+        store.rating = storeRating;
+        // (store.rating + storeRating) / Order.length
+        store.save((err, updatedStore) => {
+          if (err) {
+            next(err);
+          }
+        });
+      }
+    });
+
+    // Update Delivery Rating
+    Delivery.findById(deliveryId, (err, delivery) => {
+      if (err) {
+        next(err);
+      } else {
+        delivery.rating = deliveryRating;
+        delivery.save((err, updatedDelivery) => {
+          if (err) {
+            next(err);
+          }
+        });
+      }
+    });
+
+    Order.findById(orderId, (err, order) => {
+      if (err) {
+        next(err);
+      } else {
+        order.pizzaRating = pizzaRating;
+        order.save((err, updatedOrder) => {
+          if (err) {
+            next(err);
+          } else {
+            res.redirect('/profile');
+          }
+        });
+      }
+    });
+  } else if (accountType == 'manager' || accountType == 'Manager') {
+    let customerId = req.body.customerId;
+    let orderId = req.body.orderId;
+    let deliveryPerson = req.body.deliveryPerson;
+    // console.log(deliveryPerson);
+    if (deliveryPerson) {
+      Order.findById(orderId, (err, order) => {
+        if (err) {
+          next(err);
+        } else {
+          order.delivery = deliveryPerson;
+          order.status = true;
+          order.save((err, updatedOrder) => {
+            if (err) {
+              next(err);
+            } else {
+              res.redirect('/profile');
+            }
+          });
+        }
+      });
+      // Order.findById(orderId, (err, order) => {
+      //   if (err) {
+      //     next(err);
+      //   } else {
+      //     console.log(order.delivery);
+      //     order.delivery = deliveryPerson;
+      //     order.status = true;
+      //     order.save((err, updatedOrder) => {
+      //       if (err) {
+      //         next(err);
+      //       } else {
+      //         res.redirect('/profile');
+      //       }
+      //     });
+      //   }
+      // });
+    } else {
+      Customer.findById(customerId, (err, customer) => {
+        if (err) {
+          next(err);
+        } else {
+          customer.active = true;
+          customer.save((err, updatedCustomer) => {
+            if (err) {
+              next(err);
+            } else {
+              res.redirect('/profile');
+            }
+          });
+        }
+      });
+    }
+  } else if (accountType == 'delivery' || accountType == 'Delivery') {
+    let deliveryAvailability = req.body.availability;
+    Delivery.findById(req.session.userId, (err, delivery) => {
+      if (err) {
+        next(err);
+      } else {
+        delivery.availability = deliveryAvailability;
+        delivery.save((err, updatedDelivery) => {
+          if (err) {
+            next(err);
+          } else {
+            res.redirect('/profile');
+          }
+        });
+      }
+    });
+  }
+});
+
 router.get('/login', (req, res) => {
   res.render('login', { title: 'Login' });
 });
@@ -193,14 +389,13 @@ router.post('/login', (req, res, next) => {
   if (email && password && accountType) {
     if (accountType == 'customer') {
       Customer.authenticate(email, password, accountType, (err, user) => {
-        if (err || !user) {
-          const err = new Error('Wrong email or password or account type');
-          err.status = 401;
+        if (err) {
           next(err);
         } else {
           req.session.userId = user._id;
           req.session.address = user.address;
           req.session.accountType = user.accountType;
+          req.session.storeJoinedId = user.storeJoinedId;
           res.redirect('/profile');
         }
       });
@@ -272,10 +467,10 @@ router.post('/signup', (req, res, next) => {
         if (err) {
           next(err);
         } else {
-          req.session.userId = user._id;
-          req.session.address = user.address;
-          req.session.accountType = user.accountType;
-          res.redirect('/profile');
+          // req.session.userId = user._id;
+          // req.session.address = user.address;
+          // req.session.accountType = user.accountType;
+          res.redirect('/');
         }
       });
     } else if (accountType == 'manager') {

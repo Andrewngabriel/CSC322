@@ -15,10 +15,15 @@ const StoreSchema = new Schema({
   address: {
     type: Number,
     unique: true,
-    requires: true,
+    required: true,
     min: 0,
     max: 50,
-    trim: trim
+    trim: true
+  },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5
   }
 });
 

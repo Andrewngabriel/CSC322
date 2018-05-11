@@ -32,7 +32,7 @@ const OrderSchema = new Schema({
   },
   delivery: {
     type: Schema.Types.ObjectId,
-    ref: 'Employee',
+    ref: 'Delivery',
     required: false
   },
   cook: {

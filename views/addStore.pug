@@ -1,0 +1,17 @@
+extends layout
+block content
+
+  .jumbotron
+    .container
+      h1.display-4.text-center Add a Store
+  
+  .container
+    .row.justify-content-center
+      .col-6.text-center
+        form(method="POST")
+          form
+            .form-group
+              input.form-control(type="text" placeholder="Store Name" name="storeName")
+            .form-group
+              input.form-control(type="number" placeholder="Store Address (Must be a number between 0 - 50)" name="address")
+            button.btn.btn-primary(type="submit") Submit

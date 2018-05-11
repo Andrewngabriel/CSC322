@@ -7,10 +7,19 @@ block content
 
   .container
     .row.justify-content-center
-      .col.text-center
-        .card(style="width: 20rem")
-          img.card-img-top(src="http://via.placeholder.com/286x140")
-          .card-body
-            h5.card-title Store Title
-            p.card-text Store Info
-            a.btn.btn-primary(href="#") Join Store
+     
+        each store in storeList
+          .col
+            .card
+              h5.card-header= ("Store Name: " + store.name)
+              .card-body
+                //- h6.card-title= ("Manager ID: " + store.manager)
+                p.card-text= ("Address: " + store.address)
+                form(method="POST")
+                  form
+                    .form-group
+                      input.form-control(type="hidden" name='storeID' value=`${store._id}`)
+                    .form-group
+                      input.form-control(type="hidden" name='storeName' value=`${store.name}`)
+                    button.btn.btn-primary(type="submit") Join Store
+                    br

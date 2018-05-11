@@ -31,6 +31,10 @@ const DeliverySchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Order',
     required: false
+  },
+  availability: {
+    type: Boolean,
+    default: true
   }
 });
 
