@@ -35,6 +35,49 @@ router.post('/', (req, res, next) => {
   });
 });
 
+router.get('/search', mid.requiresManagerAccess, (req, res, next) => {
+  res.render('search', { title: 'Search' });
+});
+
+router.post('/search', mid.requiresManagerAccess, (req, res, next) => {
+  let orderId = req.body.orderNumber;
+  let deliveryId = req.body.deliveryId;
+  if (orderId) {
+    Order.findById(orderId, (err, order) => {
+      if (err) {
+        next(err);
+      } else {
+        res.render('search', {
+          orderId: order._id,
+          date: order.date,
+          address: order.address,
+          pizzaSize: order.pizzaSize,
+          pizzaToppings: order.pizzaToppings,
+          drink: order.pizzaDrink,
+          salad: order.salad,
+          dough: order.dough
+        });
+      }
+    });
+  } else if (deliveryId) {
+    Delivery.findById(deliveryId, (err, delivery) => {
+      if (err) {
+        next(err);
+      } else {
+        res.render('search', {
+          deliveryId: delivery._id,
+          deliveryEmail: delivery.email,
+          deliveryName: delivery.name,
+          deliveryAvailability: delivery.availability
+        });
+      }
+    });
+  } else {
+    const err = new Error('You must enter a search value');
+    next(err);
+  }
+});
+
 router.get('/address', (req, res) => {
   res.render('address', { title: 'Address' });
 });
