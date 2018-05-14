@@ -7,6 +7,7 @@ const Delivery = require('../models/delivery');
 const Cook = require('../models/cook');
 const Employee = require('../models/employee');
 const Store = require('../models/store');
+const MenuItem = require('../models/menuItem');
 const mid = require('../middleware'); // Middleware helper functions for authentication
 
 router.get('/', (req, res, next) => {
@@ -143,12 +144,89 @@ router.post('/addStore', mid.requiresManagerAccess, (req, res, next) => {
   }
 });
 
+router.get('/addMenuItem', (req, res, next) => {
+  res.render('addMenuItem', { title: 'Add Menu Item' });
+});
+
+router.post('/addMenuItem', (req, res, next) => {
+  let category = req.body.menuCategory;
+  let topping = req.body.topping;
+  let dough = req.body.dough;
+  let drink = req.body.drink;
+  if (topping && category) {
+    let menuItemData = {
+      name: topping,
+      category: category
+    };
+    MenuItem.create(menuItemData, (err, menuItem) => {
+      if (err) {
+        next(err);
+      } else {
+        res.redirect('/addMenuItem');
+      }
+    });
+  } else if (dough && category) {
+    let menuItemData = {
+      name: dough,
+      category: category
+    };
+    MenuItem.create(menuItemData, (err, item) => {
+      if (err) {
+        next(err);
+      } else {
+        res.redirect('/addMenuItem');
+      }
+    });
+  } else if (drink && category) {
+    let menuItemData = {
+      name: drink,
+      category: category
+    };
+    MenuItem.create(menuItemData, (err, item) => {
+      if (err) {
+        next(err);
+      } else {
+        res.redirect('/addMenuItem');
+      }
+    });
+  } else {
+    const err = new Error('Some fields were note specified');
+    next(err);
+  }
+});
+
 router.get('/about', (req, res) => {
   res.render('about', { title: 'About' });
 });
 
-router.get('/order', (req, res) => {
-  res.render('order', { title: 'About' });
+router.get('/order', (req, res, next) => {
+  let toppings = MenuItem.find({ category: 'topping' });
+  let doughTypes = MenuItem.find({ category: 'dough' });
+  let drink = MenuItem.find({ category: 'drink' });
+  toppings.exec((err, toppings) => {
+    if (err) {
+      next(err);
+    } else {
+      doughTypes.exec((err, doughTypes) => {
+        if (err) {
+          next(err);
+        } else {
+          drink.exec((err, drink) => {
+            if (err) {
+              next(err);
+            } else {
+              res.render('order', {
+                title: 'Order',
+                toppings: toppings,
+                doughTypes: doughTypes,
+                drinks: drink
+              });
+            }
+          });
+        }
+      });
+    }
+  });
 });
 
 router.post('/order', mid.requiresJoinStore, (req, res, next) => {
@@ -445,6 +523,48 @@ router.post('/profile', (req, res, next) => {
               });
             }
           });
+        }
+      });
+    }
+  } else if (accountType == 'cook' || accountType == 'Cook') {
+    let category = req.body.menuCategory;
+    let topping = req.body.topping;
+    let dough = req.body.dough;
+    let drink = req.body.drink;
+    if (topping && category) {
+      let menuItemData = {
+        name: topping,
+        category: category
+      };
+      MenuItem.create(menuItemData, (err, menuItem) => {
+        if (err) {
+          next(err);
+        } else {
+          redirect('/profile');
+        }
+      });
+    } else if (dough && category) {
+      let menuItemData = {
+        name: dough,
+        category: category
+      };
+      MenuItem.create(menuItemData, (err, menuItem) => {
+        if (err) {
+          next(err);
+        } else {
+          redirect('/profile');
+        }
+      });
+    } else if (drink && category) {
+      let menuItemData = {
+        name: drink,
+        category: category
+      };
+      MenuItem.create(menuItemData, (err, menuItem) => {
+        if (err) {
+          next(err);
+        } else {
+          redirect('/profile');
         }
       });
     }

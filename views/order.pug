@@ -17,15 +17,22 @@ block content
             #collapseOne.collapse(aria-labelledby='headingOne', data-parent='#accordion')
               .card-body
                 .row
-                  .col-sm-4.left
-                    img.img-responsive.img-rounded(src='static/img/menu/pizzas/olives.png' width='250', height='210')
-                    p Olives
+                  if toppings
+                    each topping in toppings
+                      .col-sm-4
+                        img.img-responsive.img-rounded(src=`static/img/menu/pizzas/${topping.name}.png` width='250', height='210')
+                        p= `${topping.name}`
+                  
+                  //- .col-sm-4.left
+                  //-   img.img-responsive.img-rounded(src='static/img/menu/pizzas/olives.png' width='250', height='210')
+                  //-   p Olives
                   .col-sm-4.center
                     img.img-responsive.img-rounded(src='static/img/menu/pizzas/plain.png' width='250', height='210')
                     p Mozzarela Cheese
-                  .col-sm-4.right
-                    img.img-responsive.img-rounded(src='static/img/menu/pizzas/pepperoni.png' width='250', height='210')
-                    p Pepperoni
+                  //- .col-sm-4.right
+                  //-   img.img-responsive.img-rounded(src='static/img/menu/pizzas/pepperoni.png' width='250', height='210')
+                  //-   p Pepperoni
+          //- Drink Options
           .card
             #headingTwo.card-header
               h5.mb-0
@@ -34,15 +41,22 @@ block content
             #collapseTwo.collapse(aria-labelledby='headingTwo', data-parent='#accordion')
               .card-body
                 .row
-                  .col-sm-4.left
-                    img.img-responsive.img-rounded(src='static/img/menu/drinks/water.png' width='250', height='240')
-                    p Water
+                  if drinks
+                    each drink in drinks
+                      .col-sm-4
+                        img.img-responsive.img-rounded(src=`static/img/menu/drinks/${drink.name}.png` width='250', height='210')
+                        p= `${drink.name}`
+                  
+                  //- .col-sm-4.left
+                  //-   img.img-responsive.img-rounded(src='static/img/menu/drinks/water.png' width='250', height='240')
+                  //-   p Water
                   .col-sm-4.center
                     img.img-responsive.img-rounded(src='static/img/menu/drinks/soda.png' width='250', height='240')
                     p Sada
                   .col-sm-4.right
                     img.img-responsive.img-rounded(src='static/img/menu/drinks/beer.png' width='250', height='240')
                     p Beer
+          //- Salad Options
           .card
             #headingThree.card-header
               h5.mb-0
@@ -51,6 +65,7 @@ block content
             #collapseThree.collapse(aria-labelledby='headingThree', data-parent='#accordion')
               .card-body
                 .row
+                
                   .col-sm-4.left
                     img.img-responsive.img-rounded(src='static/img/menu/cooks/salad.png' width='250', height='220')
                     p Salad
@@ -60,6 +75,7 @@ block content
                   .col-sm-4.right
                     img.img-responsive.img-rounded(src='static/img/menu/cooks/soup.png' width='250', height='220')
                     p Soup
+          //- Dough Type
           .card
             #headingFour.card-header
               h5.mb-0
@@ -68,6 +84,11 @@ block content
             #collapseFour.collapse(aria-labelledby='headingFour', data-parent='#accordion')
               .card-body
                 .row
+                  if doughTypes
+                    each dough in doughTypes
+                      .col-sm-4
+                        img.img-responsive.img-rounded(src=`static/img/menu/dough/${dough.name}.png` width='250', height='210')
+                        p= `${dough.name}`
                   .col-sm-6.left
                     img.img-responsive.img-rounded(src='static/img/menu/dough/american.png' width='350', height='310')
                     p America

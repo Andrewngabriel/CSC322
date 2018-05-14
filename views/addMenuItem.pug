@@ -1,0 +1,25 @@
+extends layout.pug
+block content
+  .jumbotron
+    .container
+      h1.display-4.text-center Add Menu Item
+  
+  .row.justify-content-center
+    .col-6.text-center
+      form(method="POST")
+        //- Category Select
+        .form-group
+          select.form-control(name='menuCategory')
+            option(value='topping') Topping
+            option(value='drink') Drink
+            option(value='dough') Dough
+        //- Toppings Input
+        .form-group
+          input.form-control(type="text" placeholder="Toppings" name="topping")
+        //- Drink Input
+        .form-group
+          input.form-control(type="text" placeholder="Drink" name="drink")
+        //- Dough Type Input
+        .form-group
+          input.form-control(type="text" placeholder="Dough Type" name="dough")
+        button.btn.btn-primary(type="submit") Submit

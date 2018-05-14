@@ -206,6 +206,8 @@ block content
       .col.text-right
         - if (accountType == "manager" || accountType == "Manager")
           a.btn.btn-primary(href="/addStore") Add Store
+        - if (accountType == "cook" || accountType == "Cook")
+          a.btn.btn-primary(href="/addMenuItem") Add Menu Item
       
       .col.text-left
         - if (accountType == "customer" || accountType == "manager" || accountType == "Manager" || accountType == "Customer")
